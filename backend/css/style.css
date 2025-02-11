@@ -1,0 +1,102 @@
+body {
+  background: #f8f9fa;
+  font-family: "Arial", sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+}
+
+#sidebar {
+  min-width: 250px;
+  max-width: 250px;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+#sidebar .sidebar-header {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+#sidebar ul.components {
+  padding: 20px 0;
+}
+
+#sidebar ul li a {
+  padding: 10px 20px;
+  font-size: 1.1em;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+#sidebar ul li a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#sidebar ul li.active > a {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+#sidebar ul li a i {
+  margin-right: 10px;
+}
+
+#content {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.table > :not(caption) > * > * {
+  padding: 1rem;
+}
+
+.badge {
+  padding: 0.5em 1em;
+}
+
+.dropdown-menu {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.navbar {
+  padding: 1rem;
+}
+
+.navbar .btn {
+  padding: 0.5rem 1rem;
+}
+
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  #sidebar {
+    margin-left: -250px;
+  }
+  #sidebar.active {
+    margin-left: 0;
+  }
+}
