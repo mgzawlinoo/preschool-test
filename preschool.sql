@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 11, 2025 at 07:03 AM
+-- Generation Time: Feb 11, 2025 at 04:52 PM
 -- Server version: 8.0.41-0ubuntu0.22.04.1
 -- PHP Version: 8.2.27
 
@@ -70,8 +70,8 @@ CREATE TABLE `Classes` (
 --
 
 INSERT INTO `Classes` (`class_id`, `class_name`, `age`, `teacher_id`, `max_students`, `schedule`, `start_date`) VALUES
-(9, 'The Circle Room', '2-3 years', 23, 70, 'Mon-Fri, 1:00 PM - 4:00 PM', '2018-02-17'),
-(10, 'The Sunshine Room', '2-3 years', 25, 33, 'Mon-Fri, 9:00 AM - 12:00 PM', '2025-01-22'),
+(9, 'The Circle Room', '2-3 years', 23, 10, 'Mon-Fri, 1:00 PM - 4:00 PM', '2025-02-01'),
+(10, 'The Sunshine Room', '2-3 years', 25, 15, 'Mon-Fri, 9:00 AM - 12:00 PM', '2025-01-22'),
 (11, 'Fun Friends Preschool', '4-5 years', 24, 68, 'Mon-Fri, 1:00 PM - 4:00 PM', '1997-03-18'),
 (12, 'The Bear Cubs Room', '4-5 years', 23, 34, 'Mon-Fri, 9:00 AM - 12:00 PM', '2008-10-10');
 
@@ -138,9 +138,9 @@ CREATE TABLE `Parents` (
 --
 
 INSERT INTO `Parents` (`parent_id`, `user_id`, `name`, `phone`, `address`) VALUES
-(5, 67, 'Jillian Eaton', '+1 (571) 513-8036', 'Qui laborum cupidita'),
-(6, 71, 'Reuben House', '+1 (823) 444-7128', 'Et et ex et in neces'),
-(7, 72, 'Liberty Austin', '+1 (776) 521-1893', 'Et officia dolor ut');
+(5, 67, 'U Kyaw Win', '+1 (571) 513-8036', 'Qui laborum cupidita'),
+(6, 71, 'Daw Hla Hla', '+1 (823) 444-7128', 'Et et ex et in neces'),
+(7, 72, 'Daw Thi Dar', '+1 (776) 521-1893', 'Et officia dolor ut');
 
 -- --------------------------------------------------------
 
@@ -167,12 +167,21 @@ CREATE TABLE `Staff` (
   `staff_id` int NOT NULL,
   `user_id` int NOT NULL,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `staff_role` enum('Admin','Assistant','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `hire_date` date NOT NULL,
-  `salary` decimal(10,2) DEFAULT NULL,
+  `salary` int DEFAULT NULL,
   `address` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `Staff`
+--
+
+INSERT INTO `Staff` (`staff_id`, `user_id`, `name`, `photo`, `phone`, `staff_role`, `hire_date`, `salary`, `address`) VALUES
+(8, 73, 'U Soe Moe', '8_73.png', '+1 (647) 447-875778', 'Assistant', '2024-11-05', 200000, 'Voluptatum ut volupt'),
+(9, 74, 'U Aung Aung', '9_74.png', '+1 (842) 739-6447', 'Other', '2024-07-10', 300000, 'Accusamus sed et fug');
 
 -- --------------------------------------------------------
 
@@ -196,10 +205,12 @@ CREATE TABLE `Students` (
 
 INSERT INTO `Students` (`student_id`, `name`, `date_of_birth`, `gender`, `parent_id`, `enrollment_date`, `class_id`) VALUES
 (5, 'Chastity', '2015-09-11', 'Male', 5, '2025-02-11', 9),
-(6, 'Kirk Buck update', '2001-12-21', 'Male', 6, '2012-12-31', 9),
+(6, 'Kirk Buck', '2001-12-21', 'Male', 6, '2012-12-31', 9),
 (7, 'Beverly Hopkins', '1981-09-30', 'Female', 7, '2010-02-05', 9),
 (8, 'Reece Hoffman', '2024-04-28', 'Female', 6, '1999-08-31', 11),
-(9, 'Barbara Hurst', '2012-11-29', 'Female', 6, '1992-04-02', 9);
+(9, 'Tun Tun', '2020-11-01', 'Male', 6, '2025-02-01', 9),
+(10, 'Chaw Chaw', '2019-01-07', 'Female', 6, '2009-11-29', 10),
+(11, 'Kylie Robbins', '2017-01-02', 'Female', 5, '2025-02-11', 9);
 
 -- --------------------------------------------------------
 
@@ -226,9 +237,9 @@ CREATE TABLE `Teachers` (
 --
 
 INSERT INTO `Teachers` (`teacher_id`, `user_id`, `name`, `photo`, `position`, `phone`, `experience`, `qualification`, `hire_date`, `salary`, `address`) VALUES
-(23, 68, 'Teacher Su Su', '23_68.png', 'Lead Teacher', '+1 (973) 843-5916', '5', 'sample qualifications', '2025-02-02', 50000, 'Voluptatem Enim iur'),
-(24, 69, 'Teacher Thae Thae', '24_69.png', 'Assistant Teacher', '+1 (667) 369-4093', '50', 'Harum non sequi reic', '2000-10-28', 56, 'Ullamco voluptatem'),
-(25, 70, 'Teacher Aye', '25_70.png', 'Substitute Teacher', '+1 (206) 982-9625', '5', 'sample qualifications', '2025-02-02', 70000, 'Voluptates magni dis');
+(23, 68, 'Teacher Su Su', '23_68.png', 'Lead Teacher', '+1 (973) 843-5916', '15', 'MBA, B.A(English)', '2024-09-01', 2500000, 'Voluptatem Enim iur'),
+(24, 69, 'Teacher Thae Thae', '24_69.png', 'Assistant Teacher', '+1 (667) 369-4093', '5', 'B.A(English)', '2024-04-04', 1000000, 'Ullamco voluptatem'),
+(25, 70, 'Teacher Aye', '25_70.png', 'Substitute Teacher', '+1 (206) 982-9625', '3', 'B.A(English)', '2024-12-04', 70000, 'Voluptates magni dis');
 
 -- --------------------------------------------------------
 
@@ -256,7 +267,9 @@ INSERT INTO `Users` (`user_id`, `email`, `password`, `role`, `created_at`, `upda
 (69, 'bexi@mailinator.com', '$2y$10$EtM/60NPaKkMCAZyzK9kfOGH5N9BtFsupmI6/lZDt4zd1dGHnQBx6', 'Teacher', '2025-02-05 22:52:01', '2025-02-05 22:52:01'),
 (70, 'vipizez@mailinator.com', '$2y$10$ylnJMwgjvce3Z5FfkjetSusp56UJRfxASEHUlI0DhNDxrJ9rAyCt2', 'Teacher', '2025-02-05 22:52:11', '2025-02-05 22:52:11'),
 (71, 'wizubagaga@mailinator.com', '$2y$10$F1929DWRE13vphIh07GQhuLwMTNcliIHjQzmmGSb2xv5XIQ3R/ff2', 'Parent', '2025-02-05 23:02:02', '2025-02-05 23:02:02'),
-(72, 'fihoqicat@mailinator.com', '$2y$10$K37K5ELHhpkb/rspACxvdepWU0kkT5bl6mTIluVuSsOaXTnIYkGMC', 'Parent', '2025-02-05 23:02:06', '2025-02-05 23:02:06');
+(72, 'fihoqicat@mailinator.com', '$2y$10$K37K5ELHhpkb/rspACxvdepWU0kkT5bl6mTIluVuSsOaXTnIYkGMC', 'Parent', '2025-02-05 23:02:06', '2025-02-05 23:02:06'),
+(73, 'vapeqy@mailinator.com', '$2y$10$MbEdnpkn3JluQ/Q1gQrN5uUn4hiFX25uWJQxIPQmZXvdhaxptDnXy', 'Staff', '2025-02-11 09:15:01', '2025-02-11 09:15:01'),
+(74, 'sirih@mailinator.com', '$2y$10$uvQJkzjer/Pu.Q4PsRNQ1OeX/9zMUl7LcwRWz5NaEwu6B4UuGJvUe', 'Staff', '2025-02-11 09:15:41', '2025-02-11 09:15:41');
 
 --
 -- Indexes for dumped tables
@@ -401,13 +414,13 @@ ALTER TABLE `Payments`
 -- AUTO_INCREMENT for table `Staff`
 --
 ALTER TABLE `Staff`
-  MODIFY `staff_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `staff_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `Students`
 --
 ALTER TABLE `Students`
-  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `Teachers`
@@ -419,7 +432,7 @@ ALTER TABLE `Teachers`
 -- AUTO_INCREMENT for table `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- Constraints for dumped tables
