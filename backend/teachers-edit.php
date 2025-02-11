@@ -17,9 +17,10 @@
 
 <?php 
         // UPDATE TEACHER
-        if (isset($_POST['update']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (isset($_POST['update_teacher']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $error = [];
+            
             // trim inputs value
             $user_id = trim($_POST['user-id']);
             $teacher_id = trim($_POST['teacher-id']);
@@ -36,15 +37,15 @@
             // filter inputs
             $user_id = filter_var($user_id, FILTER_SANITIZE_NUMBER_INT);
             $teacher_id = filter_var($teacher_id, FILTER_SANITIZE_NUMBER_INT);
-            $name = filter_var($name, FILTER_SANITIZE_STRING);
-            $phone = filter_var($phone, FILTER_SANITIZE_STRING);
-            $position = filter_var($position, FILTER_SANITIZE_STRING);
-            $photo = filter_var($photo, FILTER_SANITIZE_STRING);
-            $experience = filter_var($experience, FILTER_SANITIZE_STRING);
-            $qualification = filter_var($qualification, FILTER_SANITIZE_STRING);
-            $hire_date = filter_var($hire_date, FILTER_SANITIZE_STRING);
+            $name = htmlspecialchars($name);
+            $phone = htmlspecialchars($phone);
+            $position = htmlspecialchars($position);
+            $photo = htmlspecialchars($photo);
+            $experience = htmlspecialchars($experience);
+            $qualification = htmlspecialchars($qualification);
+            $hire_date = htmlspecialchars($hire_date);
             $salary = filter_var($salary, FILTER_SANITIZE_NUMBER_INT);
-            $address = filter_var($address, FILTER_SANITIZE_STRING);
+            $address = htmlspecialchars($address);
 
             // check empty fields
             if (empty($name) || empty($phone) || empty($position) || empty($experience) || empty($qualification) || empty($hire_date) || empty($salary) || empty($address)) {
@@ -154,107 +155,120 @@
                 <?php endif; ?>
 
                 <form action="teachers-edit.php?id=<?= $teacher['teacher_id'] ?>" method="POST" enctype="multipart/form-data" >
-                        <div class="modal-body">
+                    <input type="hidden" name="teacher-id" value="<?= $teacher['teacher_id'] ?>" required>
+                    <!-- ဒီ user id လိုတာက ပုံမှာ နာမည်ကို generate အသေထုတ်ချင်တဲ့ အတွက် သုံးဖို့ လိုတာ , အမှန်က မလိုအပ်ပါ -->
+                    <input type="hidden" name="user-id" value="<?= $teacher['user_id'] ?>" required>
 
-                                <input type="hidden" name="teacher-id" value="<?= $teacher['teacher_id'] ?>" required>
-                                <input type="hidden" name="user-id" value="<?= $teacher['user_id'] ?>" required>
-
-                                <div class="row">
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Full Name</label>
-                                        <input type="text" name="name" class="form-control" value="<?= $teacher['name'] ?>" required >
-                                    </div>
-
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" name="email" class="form-control" value="<?= $teacher['email'] ?>" disabled>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mb-3">
-                                        <label class="form-label">Position</label>
-                                        <select class="form-select" name="position" id="position" >
-                                            <option value="">Select Position</option>
-
-                                            <?php
-                                                // position array 
-                                                $positions = ['Lead Teacher', 'Assistant Teacher', 'Substitute Teacher'];
-                                            ?>
-                                            <!-- Show Teacher List with foreach loop -->
-                                            <?php foreach($positions as $position) : ?>
-                                                <option 
-                                                <?php if ($teacher['position'] == $position) : ?> selected <?php endif; ?>
-                                                value="<?= $position; ?>"><?= $position; ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                   
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12 mb-3 d-flex align-items-center justify-content-center">
-                                        <img src="<?= $teacher['photo'] ? 'uploads/' . $teacher['photo'] : 'https://placehold.co/150' ?>" class="rounded-circle" style="max-width: 150px; height: auto" alt="Teacher">
-                                        <div class="w-100 ps-5">
-                                            <label class="form-label">Photo</label>
-                                            <input type="file" name="photo" class="form-control" >
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Phone Number</label>
-                                        <input type="tel" name="phone" class="form-control" value="<?= $teacher['phone'] ?>" required>
-                                    </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Experience (years)</label>
-                                        <input type="number" name="experience" class="form-control" value="<?= $teacher['experience'] ?>" required>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Salary</label>
-                                        <input type="number" name="salary" class="form-control" value="<?= $teacher['salary'] ?>" required>
-                                    </div>
-                                    
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Hire Date</label>
-                                        <input type="date" name="hiredate" class="form-control" value="<?= $teacher['hire_date'] ?>" required>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 mb-3">
-                                            <label class="form-label">Qualifications</label>
-                                            <textarea class="form-control" name="qualification"rows="3" required><?= $teacher['qualification'] ?></textarea>
-                                        </div>
-                                    <div class="col-lg-6 mb-3">
-                                        <label class="form-label">Address</label>
-                                        <textarea class="form-control" name="address" rows="3" required><?= $teacher['address'] ?></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-8 offset-lg-2 mb-3 text-center">
-                                        <button type="submit" name="update" class="btn btn-primary">Update Teacher</button>
-                                    </div>
-                                </div>
-
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name" class="form-control" value="<?= $teacher['name'] ?>" required >
                         </div>
+
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="<?= $teacher['email'] ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <label class="form-label">Position</label>
+                            <select class="form-select" name="position" id="position" required>
+                                <option value="">Select Position</option>
+
+                                <?php
+                                    // position array 
+                                    $positions = ['Lead Teacher', 'Assistant Teacher', 'Substitute Teacher'];
+                                ?>
+                                <!-- Show Teacher List with foreach loop -->
+                                <?php foreach($positions as $position) : ?>
+                                    <option 
+                                    <?php if ($teacher['position'] == $position) : ?> selected <?php endif; ?>
+                                    value="<?= $position; ?>"><?= $position; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 mb-3 d-flex align-items-center justify-content-center">
+                            <div id="preview-image"><img src="<?= $teacher['photo'] ? 'uploads/' . $teacher['photo'] : 'https://placehold.co/150' ?>" class="rounded-circle" style="max-width: 150px; height: auto" alt="Teacher"></div>
+                            <div class="w-100 ps-5">
+                                <label class="form-label" for="photo">Photo</label>
+                                <input accept="image/jpeg, image/png, image/jpg" type="file" name="photo" class="form-control" id="photo">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control" value="<?= $teacher['phone'] ?>" required>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Experience (years)</label>
+                            <input type="number" name="experience" class="form-control" value="<?= $teacher['experience'] ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Salary</label>
+                            <input type="number" name="salary" class="form-control" value="<?= $teacher['salary'] ?>" required>
+                        </div>
+                        
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Hire Date</label>
+                            <input type="date" name="hiredate" class="form-control" value="<?= $teacher['hire_date'] ?>" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                                <label class="form-label">Qualifications</label>
+                                <textarea class="form-control" name="qualification"rows="3" required><?= $teacher['qualification'] ?></textarea>
+                            </div>
+                        <div class="col-lg-6 mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" name="address" rows="3" required><?= $teacher['address'] ?></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2 mb-3 text-center">
+                            <a href="teachers.php" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" name="update_teacher" class="btn btn-primary">Update Teacher</button>
+                        </div>
+                    </div>
                 </form>
             </div>
 
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        $(document).ready(function() {
-            $('#position').find('option[value="<?= $teacher['position'] ?>"]').attr('selected', true);
+        const chooseFile = document.getElementById("photo");
+        const imgPreview = document.getElementById("preview-image");
+
+        chooseFile.addEventListener("change", function () {
+            getImgData();
         });
-    </script>   
+
+        function getImgData() {
+            const files = chooseFile.files[0];
+            if (files) {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(files);
+                fileReader.addEventListener("load", function () {
+                imgPreview.style.display = "block";
+                imgPreview.innerHTML = '<img class="rounded-circle" style="max-width: 150px; height: auto" alt="Teacher" src="' + this.result + '" />';
+                });    
+            }
+        }
+    </script>
 
 <?php include 'layouts/footer.php'; ?>
 

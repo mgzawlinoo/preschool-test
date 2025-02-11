@@ -5,8 +5,9 @@
         // Add Student
         if (isset($_POST['add_student']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
+            $error = [];
+
             // trim inputs value
-            
             $name = trim($_POST['name']);
             $date_of_birth = trim($_POST['date_of_birth']);
             $gender = trim($_POST['gender']);
@@ -22,8 +23,11 @@
             $class_id = filter_var($class_id, FILTER_SANITIZE_NUMBER_INT);
             $parent_id = filter_var($parent_id, FILTER_SANITIZE_NUMBER_INT);
 
+            if(empty($name) || empty($date_of_birth) || empty($gender) || empty($enrollment_date) || empty($class_id) || empty($parent_id)) {
+                $error['name'] = 'All fields are required';
+            }
 
-            if(!empty($name) && !empty($date_of_birth) && !empty($gender) && !empty($enrollment_date) && !empty($class_id) && !empty($parent_id)) {
+            if(count($error) == 0) {
                 try {
                     $add_class_query = "INSERT INTO Students (name, date_of_birth, gender, enrollment_date, class_id, parent_id) VALUES (:name, :date_of_birth, :gender, :enrollment_date, :class_id, :parent_id)";
                     $statement = $pdo->prepare($add_class_query);
@@ -64,6 +68,14 @@
 
                 <!-- Filters -->
                 <?php include 'components/students/filters.php'; ?>
+
+                <?php if(isset($error) && count($error) > 0) : ?>
+                    <div class="alert alert-danger">
+                        <?php foreach($error as $e) : ?>
+                            <li><?php echo $e; ?></li>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Students Table -->
                 <?php include 'components/students/table.php'; ?>

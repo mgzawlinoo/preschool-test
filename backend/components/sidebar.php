@@ -1,13 +1,15 @@
 <?php 
 
     $navItems = [
-        ['name' => 'Dashboard', 'link'=> 'index.php', 'icon' => 'bi bi-speedometer2'],
-        ['name' => 'Student', 'link'=> 'students.php', 'icon' => 'bi bi-person-square'],
-        ['name' => 'Teacher', 'link'=> 'teachers.php' , 'icon' => 'bi bi-person'],
-        ['name' => 'Classes', 'link'=> 'classes.php' , 'icon' => 'bi bi-calendar3'],
-        ['name' => 'Payments', 'link'=> 'payments.php' , 'icon' => 'bi bi-cash'],
-        ['name' => 'Notifications', 'link'=> 'notifications.php' , 'icon' => 'bi bi-bell'],
-        ['name' => 'Settings', 'link'=> 'settings.php' , 'icon' => 'bi bi-gear'],
+        ['name' => 'Dashboard', 'link'=> 'index.php', 'icon' => 'bi bi-layout-text-window-reverse'],
+        ['name' => 'Teacher', 'link'=> 'teachers.php' , 'icon' => 'bi bi-person-lines-fill'],
+        ['name' => 'Staff', 'link'=> 'staff.php' , 'icon' => 'bi bi-person-badge'],
+        ['name' => 'Parent', 'link'=> 'parents.php' , 'icon' => 'bi bi-people-fill'],
+        ['name' => 'Student', 'link'=> 'students.php', 'icon' => 'bi bi-person-bounding-box'],
+        ['name' => 'Classes', 'link'=> 'classes.php' , 'icon' => 'bi bi-calendar4-week'],
+        // ['name' => 'Payments', 'link'=> 'payments.php' , 'icon' => 'bi bi-cash'],
+        // ['name' => 'Notifications', 'link'=> 'notifications.php' , 'icon' => 'bi bi-bell'],
+        // ['name' => 'Settings', 'link'=> 'settings.php' , 'icon' => 'bi bi-gear'],
     ];
 
     function activeClass($itemUrl): string {

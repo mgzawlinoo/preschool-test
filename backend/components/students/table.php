@@ -31,10 +31,11 @@
                 <tbody>
                                         
                         <?php if(isset($students) && count($students) > 0) : ?>
+                            <?php $i = 1; ?>
                             <!-- Show Student List with foreach loop -->
                             <?php foreach($students as $student) : ?>
                                 <tr>
-                                    <td>#</td>
+                                    <td><?= $i++ ?></td>
                                     <td><?= $student['student_name'] ?></td>
                                     <td><?= $student['date_of_birth'] ?></td>
                                     <td><?= $student['gender'] ?></td>

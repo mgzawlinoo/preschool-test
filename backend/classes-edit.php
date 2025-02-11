@@ -20,6 +20,7 @@
   if (isset($_POST['update_class']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $error = [];
+    
     // trim inputs value
     $class_id = trim($_POST['class-id']);
     $class_name = trim($_POST['name']);
@@ -94,87 +95,88 @@
                 <?php endif; ?>
 
                 <form action="classes-edit.php?id=<?= $class['class_id']; ?>" method="POST">
-                         <input type="hidden" name="class-id" value="<?= $class['class_id']; ?>">
-                        <div class="mb-3">
-                            <label class="form-label">Class Name</label>
-                            <input type="text" class="form-control" name="name" value="<?= $class['class_name']; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Age Group</label>
-                            <select class="form-select" name="age" required>
+                    <input type="hidden" name="class-id" value="<?= $class['class_id']; ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Class Name</label>
+                        <input type="text" class="form-control" name="name" value="<?= $class['class_name']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age Group</label>
+                        <select class="form-select" name="age" required>
 
-                            <option value="">Select Age Group</option>
-                                <?php
-                                    $ages = ['2-3 years', '3-4 years', '4-5 years'];
-                                ?>
-                                <!-- Show Age Group List with foreach loop -->
-                                <?php foreach($ages as $age) : ?>
+                        <option value="">Select Age Group</option>
+                            <?php
+                                $ages = ['2-3 years', '3-4 years', '4-5 years'];
+                            ?>
+                            <!-- Show Age Group List with foreach loop -->
+                            <?php foreach($ages as $age) : ?>
+                                <option 
+                                <?php if ($class['age'] == $age) : ?> selected <?php endif; ?>
+                                value="<?= $age; ?>"><?= $age; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Lead Teacher</label>
+
+                        <select class="form-select" name="teacher-id" required>
+                            <option value="">Select Teacher</option>
+
+                            <?php 
+
+                                $get_teacher_list_query = "SELECT * FROM Teachers";
+                                $statement = $pdo->prepare($get_teacher_list_query);
+                                $statement->execute();
+                                $teachers = [];
+
+                                // fetch teacher with while loop
+                                while($teacher = $statement->fetch(PDO::FETCH_ASSOC)) {
+                                    $teachers[] = $teacher;
+                                }
+
+                            ?>
+
+                            <?php if(count($teachers) > 0) : ?>
+                                <!-- Show Teacher List with foreach loop -->
+                                <?php foreach($teachers as $teacher) : ?>
                                     <option 
-                                    <?php if ($class['age'] == $age) : ?> selected <?php endif; ?>
-                                    value="<?= $age; ?>"><?= $age; ?></option>
+                                    <?php if ($class['teacher_id'] == $teacher['teacher_id']) : ?> selected <?php endif; ?>
+                                    value="<?= $teacher['teacher_id']; ?>"><?= $teacher['name']; ?></option>
                                 <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Lead Teacher</label>
+                            <?php endif; ?>
 
-                            <select class="form-select" name="teacher-id" required>
-                                <option value="">Select Teacher</option>
+                        </select>
+                        
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Schedule</label>
 
-                                <?php 
-
-                                    $get_teacher_list_query = "SELECT * FROM Teachers";
-                                    $statement = $pdo->prepare($get_teacher_list_query);
-                                    $statement->execute();
-                                    $teachers = [];
-
-                                    // fetch teacher with while loop
-                                    while($teacher = $statement->fetch(PDO::FETCH_ASSOC)) {
-                                        $teachers[] = $teacher;
-                                    }
-
-                                ?>
-
-                                <?php if(count($teachers) > 0) : ?>
-                                    <!-- Show Teacher List with foreach loop -->
-                                    <?php foreach($teachers as $teacher) : ?>
-                                        <option 
-                                        <?php if ($class['teacher_id'] == $teacher['teacher_id']) : ?> selected <?php endif; ?>
-                                        value="<?= $teacher['teacher_id']; ?>"><?= $teacher['name']; ?></option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-
-                            </select>
-                            
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Schedule</label>
-
-                            <select class="form-select" name="schedule" id="schedule" required>
-                                <option value="">Select Time Slot</option>
-                                <?php
-                                    $schedules = ['Mon-Fri, 9:00 AM - 12:00 PM', 'Mon-Fri, 1:00 PM - 4:00 PM'];
-                                ?>
-                                <!-- Show Schedule List with foreach loop -->
-                                <?php foreach($schedules as $schedule) : ?>
-                                    <option 
-                                    <?php if ($class['schedule'] == $schedule) : ?> selected <?php endif; ?>
-                                    value="<?= $schedule; ?>"><?= $schedule; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Maximum Students</label>
-                            <input type="number" class="form-control" name="max-students" value="<?= $class['max_students']; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Start Date</label>
-                            <input type="date" class="form-control" name="start-date" value="<?= $class['start_date']; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <button type="submit" name="update_class" class="btn btn-primary">Update Class</button>
-                        </div>
-                    </form>
+                        <select class="form-select" name="schedule" id="schedule" required>
+                            <option value="">Select Time Slot</option>
+                            <?php
+                                $schedules = ['Mon-Fri, 9:00 AM - 12:00 PM', 'Mon-Fri, 1:00 PM - 4:00 PM'];
+                            ?>
+                            <!-- Show Schedule List with foreach loop -->
+                            <?php foreach($schedules as $schedule) : ?>
+                                <option 
+                                <?php if ($class['schedule'] == $schedule) : ?> selected <?php endif; ?>
+                                value="<?= $schedule; ?>"><?= $schedule; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Maximum Students</label>
+                        <input type="number" class="form-control" name="max-students" value="<?= $class['max_students']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-control" name="start-date" value="<?= $class['start_date']; ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <a href="classes.php" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" name="update_class" class="btn btn-primary">Update Class</button>
+                    </div>
+                </form>
 
             </div>
         </div>

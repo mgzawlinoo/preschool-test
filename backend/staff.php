@@ -13,14 +13,14 @@
             <!-- Main Content -->
             <div class="container-fluid p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Teacher Management</h2>
-                    <a href="teachers-create.php" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Add New Teacher
+                    <h2 class="mb-0">Staff Management</h2>
+                    <a href="staff-create.php" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add New Staff
                     </a>
                 </div>
 
-                <!-- Teacher Cards -->
-                <?php include 'components/teachers/cards.php'; ?>
+                <!-- Staff Cards -->
+                <?php include 'components/staff/cards.php'; ?>
             </div>
         </div>
     </div>

@@ -20,6 +20,7 @@
   if (isset($_POST['update_student']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $error = [];
+
     // trim inputs value
     $student_id = trim($_POST['student-id']);
     $name = trim($_POST['name']);
@@ -182,7 +183,8 @@
                             <label class="form-label">Enrollment Date</label>
                             <input type="date" class="form-control" name="enrollment-date" value="<?= $student['enrollment_date']; ?>" required>
                         </div>
-                        <div class="">
+                        <div class="mb-3">
+                            <a href="students.php" class="btn btn-secondary">Cancel</a>
                             <button type="submit" name="update_student" class="btn btn-primary">Update Student</button>
                         </div>
                     </form>
@@ -190,7 +192,5 @@
             </div>
         </div>
     </div>
-
-  
 
 <?php include 'layouts/footer.php'; ?>

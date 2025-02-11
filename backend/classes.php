@@ -5,8 +5,9 @@
         // Add New Class
         if (isset($_POST['addClass']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
+            $error = [];
+
             // trim inputs value
-            
             $class_name = trim($_POST['class_name']);
             $age = trim($_POST['age']);
             $teacher_id = trim($_POST['teacher_id']);
@@ -22,7 +23,12 @@
             $max_students = filter_var($max_students, FILTER_SANITIZE_NUMBER_INT);
             $start_date = htmlspecialchars($start_date);
 
-            if(!empty($class_name) && !empty($age) && !empty($teacher_id) && !empty($schedule) && !empty($max_students) && !empty($start_date)) {
+            // check empty fields
+            if (empty($class_name) || empty($age) || empty($teacher_id) || empty($schedule) || empty($max_students) || empty($start_date)) {
+                $error['empty'] = 'All fields are required';
+            }
+
+            if(count($error) == 0) {
                 try {
                     $add_class_query = "INSERT INTO Classes (class_name, age, teacher_id, schedule, max_students, start_date) VALUES (:class_name, :age, :teacher_id, :schedule, :max_students, :start_date)";
                     $statement = $pdo->prepare($add_class_query);
@@ -38,7 +44,6 @@
                     echo $e->getMessage();
                 }
             }
-            
         }
 
 ?>
@@ -61,6 +66,14 @@
                         <i class="bi bi-plus-lg"></i> Add New Class
                     </button>
                 </div>
+
+                <?php if(isset($error) && count($error) > 0) : ?>
+                    <div class="alert alert-danger">
+                        <?php foreach($error as $e) : ?>
+                            <li><?php echo $e; ?></li>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Class Cards -->
                 <?php include 'components/classes/cards.php'; ?>
