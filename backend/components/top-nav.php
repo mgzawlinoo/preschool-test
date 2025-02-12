@@ -29,16 +29,14 @@
             </div>
             <div class="dropdown">
                 <button class="btn btn-light d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                    <img src="https://placehold.co/32" class="rounded-circle me-2" alt="Admin">
-                    <span>Admin</span>
+                    <img width="32px" height="32px" src="<?= $_SESSION['admin_user']['photo'] ? 'uploads/' . $_SESSION['admin_user']['photo'] : 'https://placehold.co/32' ?>" class="rounded-circle me-2" alt="Admin">
+                    <span><?= $_SESSION['admin_user']['name'] ?></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>

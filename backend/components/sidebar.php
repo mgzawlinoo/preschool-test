@@ -26,7 +26,7 @@
 
   <nav id="sidebar" class="bg-primary">
       <div class="sidebar-header">
-          <h3 class="text-white">Little Stars</h3>
+          <h2 class="logo-title text-white">Little Stars</h2>
           <p class="text-white-50">Admin Dashboard</p>
       </div>
 

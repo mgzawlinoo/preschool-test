@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 11, 2025 at 04:52 PM
+-- Generation Time: Feb 12, 2025 at 04:54 PM
 -- Server version: 8.0.41-0ubuntu0.22.04.1
 -- PHP Version: 8.2.27
 
@@ -31,9 +31,17 @@ CREATE TABLE `Admins` (
   `admin_id` int NOT NULL,
   `user_id` int NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `address` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `Admins`
+--
+
+INSERT INTO `Admins` (`admin_id`, `user_id`, `name`, `photo`, `phone`, `address`) VALUES
+(7, 75, 'admin', '7_75.png', '+95912345678', 'No(3) A street, B Township, Yangon');
 
 -- --------------------------------------------------------
 
@@ -210,7 +218,8 @@ INSERT INTO `Students` (`student_id`, `name`, `date_of_birth`, `gender`, `parent
 (8, 'Reece Hoffman', '2024-04-28', 'Female', 6, '1999-08-31', 11),
 (9, 'Tun Tun', '2020-11-01', 'Male', 6, '2025-02-01', 9),
 (10, 'Chaw Chaw', '2019-01-07', 'Female', 6, '2009-11-29', 10),
-(11, 'Kylie Robbins', '2017-01-02', 'Female', 5, '2025-02-11', 9);
+(11, 'Kylie Robbins', '2017-01-02', 'Female', 5, '2025-02-11', 9),
+(12, 'Brennan Dunn', '2006-10-08', 'Female', 5, '2021-02-16', 9);
 
 -- --------------------------------------------------------
 
@@ -237,7 +246,7 @@ CREATE TABLE `Teachers` (
 --
 
 INSERT INTO `Teachers` (`teacher_id`, `user_id`, `name`, `photo`, `position`, `phone`, `experience`, `qualification`, `hire_date`, `salary`, `address`) VALUES
-(23, 68, 'Teacher Su Su', '23_68.png', 'Lead Teacher', '+1 (973) 843-5916', '15', 'MBA, B.A(English)', '2024-09-01', 2500000, 'Voluptatem Enim iur'),
+(23, 68, 'Teacher Su Su', '23_68.jpg', 'Lead Teacher', '+1 (973) 843-5916', '15', 'MBA, B.A(English)', '2024-09-01', 2500000, 'Voluptatem Enim iur'),
 (24, 69, 'Teacher Thae Thae', '24_69.png', 'Assistant Teacher', '+1 (667) 369-4093', '5', 'B.A(English)', '2024-04-04', 1000000, 'Ullamco voluptatem'),
 (25, 70, 'Teacher Aye', '25_70.png', 'Substitute Teacher', '+1 (206) 982-9625', '3', 'B.A(English)', '2024-12-04', 70000, 'Voluptates magni dis');
 
@@ -263,13 +272,14 @@ CREATE TABLE `Users` (
 INSERT INTO `Users` (`user_id`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES
 (1, 'mgmg@gmail.com', '$2y$10$2oVlXja9i.uZzOhOK6qjmuqPJVqmq7e6u2lCDJOf6Bor095hFywmS', 'Parent', '2025-01-23 04:57:46', '2025-01-23 04:57:46'),
 (67, 'jedapyva@mailinator.com', '$2y$10$7Y7n3vp5O1Bi0LXC3f.UC.sbBm034pVaEe0Ohp9sDHL4OWd2KQwj.', 'Parent', '2025-02-05 22:51:27', '2025-02-05 22:51:27'),
-(68, 'dupovo@mailinator.com', '$2y$10$pVW2OQkRMZEaI8eWvIhO/uWMKDUpU9IGB0EPl7cItgnDZSJQ.youi', 'Teacher', '2025-02-05 22:51:45', '2025-02-05 22:51:45'),
-(69, 'bexi@mailinator.com', '$2y$10$EtM/60NPaKkMCAZyzK9kfOGH5N9BtFsupmI6/lZDt4zd1dGHnQBx6', 'Teacher', '2025-02-05 22:52:01', '2025-02-05 22:52:01'),
+(68, 'dupovo@mailinator.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Teacher', '2025-02-05 22:51:45', '2025-02-05 22:51:45'),
+(69, 'teacherthaethae@gmail.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Teacher', '2025-02-05 22:52:01', '2025-02-05 22:52:01'),
 (70, 'vipizez@mailinator.com', '$2y$10$ylnJMwgjvce3Z5FfkjetSusp56UJRfxASEHUlI0DhNDxrJ9rAyCt2', 'Teacher', '2025-02-05 22:52:11', '2025-02-05 22:52:11'),
 (71, 'wizubagaga@mailinator.com', '$2y$10$F1929DWRE13vphIh07GQhuLwMTNcliIHjQzmmGSb2xv5XIQ3R/ff2', 'Parent', '2025-02-05 23:02:02', '2025-02-05 23:02:02'),
 (72, 'fihoqicat@mailinator.com', '$2y$10$K37K5ELHhpkb/rspACxvdepWU0kkT5bl6mTIluVuSsOaXTnIYkGMC', 'Parent', '2025-02-05 23:02:06', '2025-02-05 23:02:06'),
 (73, 'vapeqy@mailinator.com', '$2y$10$MbEdnpkn3JluQ/Q1gQrN5uUn4hiFX25uWJQxIPQmZXvdhaxptDnXy', 'Staff', '2025-02-11 09:15:01', '2025-02-11 09:15:01'),
-(74, 'sirih@mailinator.com', '$2y$10$uvQJkzjer/Pu.Q4PsRNQ1OeX/9zMUl7LcwRWz5NaEwu6B4UuGJvUe', 'Staff', '2025-02-11 09:15:41', '2025-02-11 09:15:41');
+(74, 'sirih@mailinator.com', '$2y$10$uvQJkzjer/Pu.Q4PsRNQ1OeX/9zMUl7LcwRWz5NaEwu6B4UuGJvUe', 'Staff', '2025-02-11 09:15:41', '2025-02-11 09:15:41'),
+(75, 'admin@gmail.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Admin', '2025-02-12 04:02:45', '2025-02-12 04:02:45');
 
 --
 -- Indexes for dumped tables
@@ -366,7 +376,7 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT for table `Admins`
 --
 ALTER TABLE `Admins`
-  MODIFY `admin_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `admin_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `Attendance`
@@ -420,7 +430,7 @@ ALTER TABLE `Staff`
 -- AUTO_INCREMENT for table `Students`
 --
 ALTER TABLE `Students`
-  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `Teachers`
@@ -432,7 +442,7 @@ ALTER TABLE `Teachers`
 -- AUTO_INCREMENT for table `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- Constraints for dumped tables

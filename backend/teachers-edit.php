@@ -118,6 +118,7 @@
                     $statement->bindParam(":address", $address, PDO::PARAM_STR);
                     $statement->execute();
     
+                    $_SESSION['success'] = 'Teacher updated successfully';
                     header("Location: teachers.php");
                     exit();
     

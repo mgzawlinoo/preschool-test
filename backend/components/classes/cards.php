@@ -38,7 +38,7 @@
                 </div>
                 <div class="d-flex justify-content-between">
                     <a href="classes-edit.php?id=<?= $class['class_id'] ?>" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
-                    <button class="btn btn-outline-info"><i class="bi bi-eye"></i> View Details</button>
+                    <!-- <button class="btn btn-outline-info"><i class="bi bi-eye"></i> View Details</button> -->
                 </div>
             </div>
         </div>

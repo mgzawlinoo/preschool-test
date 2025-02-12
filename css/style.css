@@ -364,17 +364,17 @@ h6,
 
 /*** Team ***/
 .team-item .team-text {
-    position: absolute;
-    width: 250px;
-    height: 250px;
-    bottom: 0;
+    position: relative;
+    width: 100%;
+    height: auto;
+    bottom: 50px;
     right: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     background: #FFFFFF;
-    border: 17px solid var(--light);
+    border: 5px solid var(--light);
     border-radius: 250px;
     transition: .5s;
 }

@@ -16,6 +16,13 @@
                     <h2 class="mb-0">User Management</h2>
                 </div>
 
+                <?php if(isset($_SESSION['success'])) :  ?>
+                    <div class="alert alert-success">
+                        <?php echo $_SESSION['success']; ?>
+                        <?php unset($_SESSION['success']); ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="row">
 
                     <?php 
@@ -24,17 +31,18 @@
                     $limit = 5;
                     $offset = ($page-1) * $limit;
                     $get_user_list_query = "
-                    SELECT a.name, a.user_id, u.email, u.role FROM Admins a 
+                    SELECT a.admin_id AS id, a.name, a.user_id, u.email, u.role FROM Admins a 
                     LEFT JOIN Users u ON a.user_id = u.user_id 
                     UNION
-                    SELECT t.name, t.user_id, u.email, u.role FROM Teachers t 
+                    SELECT t.teacher_id AS id, t.name, t.user_id, u.email, u.role FROM Teachers t 
                     LEFT JOIN Users u ON t.user_id = u.user_id 
                     UNION  
-                    SELECT p.name, p.user_id, u.email, u.role FROM Parents p 
-                    LEFT JOIN Users u ON p.user_id = u.user_id
-                    UNION
-                    SELECT s.name, s.user_id, u.email, u.role FROM Staff s 
+                    SELECT s.staff_id AS id, s.name, s.user_id, u.email, u.role FROM Staff s 
                     LEFT JOIN Users u ON s.user_id = u.user_id
+                    UNION
+                    SELECT p.parent_id AS id, p.name, p.user_id, u.email, u.role FROM Parents p 
+                    LEFT JOIN Users u ON p.user_id = u.user_id
+                    
                     LIMIT $limit OFFSET $offset
                     ";
 
@@ -59,7 +67,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
-                                        <th>Reset</th>
+                                        <th>Action</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -75,7 +83,21 @@
                                                     <td><?= $user['email'] ?></td>
                                                     <td><?= $user['role'] ?></td>
                                                     <td>
-                                                        <a href="user-password.php?id=<?= $user['user_id'] ?>" class="btn btn-primary btn-sm">Password</a>
+                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="btn btn-primary btn-sm">Reset Password</a>
+
+                                                        <?php 
+                                                            $role = [
+                                                            "Admin" => "admins-edit.php", 
+                                                            "Teacher" => "teachers-edit.php", 
+                                                            "Staff" => "staff-edit.php", 
+                                                            "Parent" => "parents-edit.php"
+                                                            ]; 
+                                                        ?>
+                                                        
+                                                        <?php if(array_key_exists($user['role'], $role)) : ?>
+                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-primary btn-sm">Edit</a>
+                                                        <?php endif; ?>
+
                                                     </td>
                                                     <td>
                                                         <a href="#" class="btn btn-success btn-sm">Active</a>

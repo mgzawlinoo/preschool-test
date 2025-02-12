@@ -65,6 +65,11 @@ if( ($_SERVER['REQUEST_METHOD'] == 'POST') AND isset($_POST['register'])) {
     // Check password match
     strcmp($password, $confirm_password) ? $errors['password'] = 'Password does not match' : '';
 
+    // check password length
+    if(strlen($password) < 8) {
+        $error['password'] = 'Password must be at least 8 characters';
+    }
+
     // Check Email Format
     if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors['email'] = 'Invalid Email Format';

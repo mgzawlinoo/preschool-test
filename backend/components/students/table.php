@@ -47,7 +47,7 @@
                                     <td><?= $student['enrollment_date'] ?></td>
                                     <td>
                                         <a href="students-edit.php?id=<?= $student['student_id'] ?>" class="btn btn-primary btn-sm">Edit</a>
-                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                        <button class="btn btn-danger btn-sm">Suspend</button>
                                     </td>
                                 </tr>
 
@@ -84,16 +84,5 @@
                 </tfoot>
             </table>
         </div>
-
-        <!-- Pagination -->
-        <!-- <nav class="mt-3">
-            <ul class="pagination justify-content-end">
-                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav> -->
     </div>
 </div>

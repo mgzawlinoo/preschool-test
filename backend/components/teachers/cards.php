@@ -50,7 +50,7 @@
 
                             <a class="btn btn-primary text-white text-decoration-none" href="teachers-edit.php?id=<?= $teacher['teacher_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
 
-                            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i> Remove</button>
+                            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i> Suspend</button>
                         </div>
                     </div>
                 </div>
