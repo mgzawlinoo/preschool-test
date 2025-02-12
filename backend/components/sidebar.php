@@ -2,11 +2,13 @@
 
     $navItems = [
         ['name' => 'Dashboard', 'link'=> 'index.php', 'icon' => 'bi bi-layout-text-window-reverse'],
+        ['name' => 'Student', 'link'=> 'students.php', 'icon' => 'bi bi-person-bounding-box'],
+        ['name' => 'Parent', 'link'=> 'parents.php' , 'icon' => 'bi bi-people-fill'],
         ['name' => 'Teacher', 'link'=> 'teachers.php' , 'icon' => 'bi bi-person-lines-fill'],
         ['name' => 'Staff', 'link'=> 'staff.php' , 'icon' => 'bi bi-person-badge'],
-        ['name' => 'Parent', 'link'=> 'parents.php' , 'icon' => 'bi bi-people-fill'],
-        ['name' => 'Student', 'link'=> 'students.php', 'icon' => 'bi bi-person-bounding-box'],
         ['name' => 'Classes', 'link'=> 'classes.php' , 'icon' => 'bi bi-calendar4-week'],
+        ['name' => 'Admin', 'link'=> 'admins.php' , 'icon' => 'bi bi-person'],
+        ['name' => 'User Management', 'link'=> 'users.php' , 'icon' => 'bi bi-wallet-fill'],
         // ['name' => 'Payments', 'link'=> 'payments.php' , 'icon' => 'bi bi-cash'],
         // ['name' => 'Notifications', 'link'=> 'notifications.php' , 'icon' => 'bi bi-bell'],
         // ['name' => 'Settings', 'link'=> 'settings.php' , 'icon' => 'bi bi-gear'],

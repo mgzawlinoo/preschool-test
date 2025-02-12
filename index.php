@@ -36,7 +36,7 @@
         <!-- Facilities End -->
 
         <!-- About Start -->
-        <?php include "./components/about.php"; ?>
+        <?php include "./components/aboutus.php"; ?>
         <!-- About End -->
 
         <!-- Call To Action Start -->

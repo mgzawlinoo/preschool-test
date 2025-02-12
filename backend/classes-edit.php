@@ -1,5 +1,5 @@
 <?php include '../database/db.php'; ?>
-<?php include 'layouts/header.php'; ?>
+<?php include './layouts/header.php'; ?>
 
 <?php 
     // ှShow Class Data from Get ID and Fill it to form
@@ -73,12 +73,12 @@
 
     <div class="wrapper">
         <!-- Sidebar -->
-        <?php include 'components/sidebar.php'; ?>
+        <?php include './components/sidebar.php'; ?>
 
         <!-- Page Content -->
         <div id="content">
             <!-- Top Navigation -->
-            <?php include 'components/top-nav.php'; ?>
+            <?php include './components/top-nav.php'; ?>
 
             <!-- Main Content -->
             <div class="container-fluid p-4">
@@ -184,4 +184,4 @@
 
   
 
-<?php include 'layouts/footer.php'; ?>
+<?php include './layouts/footer.php'; ?>

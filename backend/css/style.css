@@ -92,11 +92,19 @@ body {
   border-bottom: none;
 }
 
+#sidebar {
+  margin-left: 0;
+}
+
+#sidebar.close {
+  margin-left: -250px;
+}
+
 @media (max-width: 768px) {
   #sidebar {
     margin-left: -250px;
   }
-  #sidebar.active {
-    margin-left: 0;
+  #sidebar.close {
+    margin-left: 0px;
   }
 }

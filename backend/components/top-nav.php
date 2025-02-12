@@ -1,8 +1,17 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container-fluid">
-        <button type="button" class="btn btn-primary">
+
+        <button id="sidebarCollapseBtn"  type="button" class="btn btn-primary" onclick="activeSidebar()">
             <i class="bi bi-list"></i>
         </button>
+
+        <script>
+            // active sidebar
+            function activeSidebar() {
+                document.getElementById("sidebar").classList.toggle("close");
+            }
+        </script>
+        
         <div class="ms-auto d-flex align-items-center">
             <div class="dropdown me-3">
                 <button class="btn btn-light position-relative" type="button" data-bs-toggle="dropdown">

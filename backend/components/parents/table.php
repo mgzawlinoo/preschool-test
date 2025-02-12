@@ -16,8 +16,9 @@
 
 <div class="card">
     <div class="card-body">
+
         <div class="table-responsive">
-            <table class="table">
+            <table class="table" id="parentsTable">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -41,7 +42,7 @@
                                     <td><?= $parent['phone'] ?></td>
                                     <td><?= $parent['address'] ?></td>
                                     <td>
-                                        <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
+                                        <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-primary btn-sm">Edit</a>
                                         <button class="btn btn-danger btn-sm">Delete</button>
                                     </td>
                                 </tr>
@@ -52,17 +53,18 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        <!-- <nav class="mt-3">
-            <ul class="pagination justify-content-end">
-                <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav> -->
     </div>
 </div>
 
 </div>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#parentsTable').DataTable();
+    });
+</script>
