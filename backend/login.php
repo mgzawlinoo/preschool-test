@@ -54,7 +54,7 @@ else {
             $_SESSION['admin_user']['name'] = $admin_user['name'];
             $_SESSION['admin_user']['photo'] = $admin_user['photo'];
             $_SESSION['admin_user']['role'] = $user['role'];
-            header('Location: index.php?success=true');
+            header('Location: index.php');
             exit;
         }
         else {
