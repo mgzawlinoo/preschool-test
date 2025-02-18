@@ -103,6 +103,7 @@
                     $statement->bindParam(":address", $address, PDO::PARAM_STR);
                     $statement->execute();
     
+                    $_SESSION['success'] = 'Admin updated successfully';
                     header("Location: admins.php");
                     exit();
     

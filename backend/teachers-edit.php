@@ -27,7 +27,6 @@
             $name = trim($_POST['name']);
             $phone = trim($_POST['phone']);
             $position = trim($_POST['position']);
-            $photo = trim(isset($_POST['photo']) ? $_POST['photo'] : '');
             $experience = trim($_POST['experience']);
             $qualification = trim($_POST['qualification']);
             $hire_date = trim($_POST['hiredate']);
@@ -40,7 +39,6 @@
             $name = htmlspecialchars($name);
             $phone = htmlspecialchars($phone);
             $position = htmlspecialchars($position);
-            $photo = htmlspecialchars($photo);
             $experience = htmlspecialchars($experience);
             $qualification = htmlspecialchars($qualification);
             $hire_date = htmlspecialchars($hire_date);
@@ -56,8 +54,6 @@
 
             // check if file is uploaded
             if($_FILES['photo']['error'] == 0 && !empty($_FILES['photo']['name'])) {
-                
-                $photoname = $_FILES['photo']['name'];  
 
                 // get file extension
                 $photoextension = pathinfo($photoname, PATHINFO_EXTENSION);
@@ -92,7 +88,7 @@
                     $error['photo'] = "Uploads directory is not writable";
                 }
 
-                $photoname = $teacher_id . '_' . $user_id . '.' . $photoextension;
+                $photoname = $user_id . '.' . $photoextension;
                 $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
                 if(!$upload_result) {
                     $error['photo'] = "Failed to upload file";

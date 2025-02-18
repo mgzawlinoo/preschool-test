@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Filters -->
-                <?php include 'components/students/filters.php'; ?>
+                <!-- <?php include 'components/students/filters.php'; ?> -->
 
                 <?php if(isset($error) && count($error) > 0) : ?>
                     <div class="alert alert-danger">
@@ -146,9 +146,9 @@
                         <div class="mb-3">
                             <label class="form-label">Parent Name</label>
                             <select class="form-select" name="parent_id" required>
-                                <option value="">Select Class</option>
+                                <option value="">Select Parent</option>
 
-                                <!-- Get Class List -->
+                                <!-- Get Parent List -->
                                 <?php 
 
                                     $get_parent_list_query = "SELECT * FROM Parents ORDER BY name ASC";

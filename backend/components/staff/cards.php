@@ -2,7 +2,7 @@
 
     <?php 
 
-    $get_staff_list_query = "SELECT * FROM Staff LEFT JOIN Users ON Staff.user_id = Users.user_id";
+    $get_staff_list_query = "SELECT * FROM Staff LEFT JOIN Users ON Staff.user_id = Users.user_id WHERE Users.status = 1";
     $statement = $pdo->prepare($get_staff_list_query);
     $statement->execute();
     $staffs = [];
@@ -55,7 +55,7 @@
 
                             <a class="btn btn-primary text-white text-decoration-none" href="staff-edit.php?id=<?= $staff['staff_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
 
-                            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i> Suspend</button>
+                            <a  href="user-suspend.php?id=<?= $staff['user_id'] ?>&from=staff.php" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Suspend</a>
                         </div>
                     </div>
                 </div>

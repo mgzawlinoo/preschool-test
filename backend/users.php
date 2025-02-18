@@ -23,6 +23,13 @@
                     </div>
                 <?php endif; ?>
 
+                <?php if(isset($_SESSION['error'])) :  ?>
+                    <div class="alert alert-danger">
+                        <?php echo $_SESSION['error']; ?>
+                        <?php unset($_SESSION['error']); ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="row">
 
                     <?php 
@@ -31,16 +38,16 @@
                     $limit = 5;
                     $offset = ($page-1) * $limit;
                     $get_user_list_query = "
-                    SELECT a.admin_id AS id, a.name, a.user_id, u.email, u.role FROM Admins a 
+                    SELECT a.admin_id AS id, a.name, a.user_id, u.email, u.role, u.status FROM Admins a 
                     LEFT JOIN Users u ON a.user_id = u.user_id 
                     UNION
-                    SELECT t.teacher_id AS id, t.name, t.user_id, u.email, u.role FROM Teachers t 
+                    SELECT t.teacher_id AS id, t.name, t.user_id, u.email, u.role, u.status FROM Teachers t 
                     LEFT JOIN Users u ON t.user_id = u.user_id 
                     UNION  
-                    SELECT s.staff_id AS id, s.name, s.user_id, u.email, u.role FROM Staff s 
+                    SELECT s.staff_id AS id, s.name, s.user_id, u.email, u.role, u.status FROM Staff s 
                     LEFT JOIN Users u ON s.user_id = u.user_id
                     UNION
-                    SELECT p.parent_id AS id, p.name, p.user_id, u.email, u.role FROM Parents p 
+                    SELECT p.parent_id AS id, p.name, p.user_id, u.email, u.role, u.status FROM Parents p 
                     LEFT JOIN Users u ON p.user_id = u.user_id
                     
                     LIMIT $limit OFFSET $offset
@@ -67,8 +74,8 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Role</th>
-                                        <th>Action</th>
                                         <th>Status</th>
+                                        <th class="text-end">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,7 +90,14 @@
                                                     <td><?= $user['email'] ?></td>
                                                     <td><?= $user['role'] ?></td>
                                                     <td>
-                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="btn btn-primary btn-sm">Reset Password</a>
+                                                            <?php if($user['status'] == 1) : ?>
+                                                                <span class="text-success">Active</span>
+                                                            <?php else : ?>
+                                                                <span class="text-danger">Suspend</span>
+                                                            <?php endif; ?>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="text-white btn btn-warning btn-sm">Reset Password</a>
 
                                                         <?php 
                                                             $role = [
@@ -95,13 +109,17 @@
                                                         ?>
                                                         
                                                         <?php if(array_key_exists($user['role'], $role)) : ?>
-                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-primary btn-sm">Edit</a>
+                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
+                                                        <?php endif; ?>
+
+                                                        <?php if($user['status'] == 1) : ?>
+                                                            <a href="user-suspend.php?id=<?= $user['user_id'] ?>&from=users.php&page=<?= $page ?>" class="btn btn-danger btn-sm">Suspend</a>
+                                                        <?php else : ?>
+                                                            <a href="user-unsuspend.php?id=<?= $user['user_id'] ?>&from=users.php&page=<?= $page ?>" class="btn btn-success btn-sm">Activate</a>
                                                         <?php endif; ?>
 
                                                     </td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-success btn-sm">Active</a>
-                                                    </td>
+                                                    
                                                 </tr>
 
                                             <?php endforeach; ?>

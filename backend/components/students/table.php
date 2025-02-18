@@ -28,6 +28,7 @@
                         <th>Class Name</th>
                         <th>Parent Name</th>
                         <th>Enrollment Date</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -45,9 +46,21 @@
                                     <td><?= $student['class_name'] ?></td>
                                     <td><?= $student['parent_name'] ?></td>
                                     <td><?= $student['enrollment_date'] ?></td>
+                                    <td><?php if($student['status'] == 1) : ?>
+                                            <span class="text-success">Active</span>
+                                        <?php else : ?>
+                                            <span class="text-danger">Suspend</span>
+                                        <?php endif; ?></td>
                                     <td>
                                         <a href="students-edit.php?id=<?= $student['student_id'] ?>" class="btn btn-primary btn-sm">Edit</a>
-                                        <button class="btn btn-danger btn-sm">Suspend</button>
+                                        
+
+                                    <?php if($student['status'] == 1) : ?>
+                                        <a href="student-suspend.php?id=<?= $student['student_id'] ?>&page=<?= $page ?>" class="btn btn-danger btn-sm">Suspend</a>
+                                    <?php else : ?>
+                                        <a href="student-unsuspend.php?id=<?= $student['student_id'] ?>&page=<?= $page ?>" class="btn btn-success btn-sm">Activate</a>
+                                    <?php endif; ?>
+
                                     </td>
                                 </tr>
 

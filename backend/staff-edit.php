@@ -88,7 +88,7 @@
                     $error['photo'] = "Uploads directory is not writable";
                 }
 
-                $photoname = $staff_id . '_' . $user_id . '.' . $photoextension;
+                $photoname = $user_id . '.' . $photoextension;
                 $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
                 if(!$upload_result) {
                     $error['photo'] = "Failed to upload file";

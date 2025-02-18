@@ -22,16 +22,16 @@ if( ($_SERVER['REQUEST_METHOD'] == 'POST') AND isset($_POST['register'])) {
     $salary = trim($_POST['salary']);
 
     // Filter the input to prevent SQL injection
-    $name = filter_var($name, FILTER_SANITIZE_STRING);
+    $name = htmlspecialchars($name);
     $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    $password = filter_var($password, FILTER_SANITIZE_STRING);
-    $confirm_password = filter_var($confirm_password, FILTER_SANITIZE_STRING);
-    $role = filter_var($role, FILTER_SANITIZE_STRING);
-    $phone = filter_var($phone, FILTER_SANITIZE_STRING);
-    $address = filter_var($address, FILTER_SANITIZE_STRING);
-    $staff_role = filter_var($staff_role, FILTER_SANITIZE_STRING);
-    $hire_date = filter_var($hire_date, FILTER_SANITIZE_STRING);
-    $salary = filter_var($salary, FILTER_SANITIZE_NUMBER_INT);
+    $password = htmlspecialchars($password);
+    $confirm_password = htmlspecialchars($confirm_password);
+    $role = htmlspecialchars($role);
+    $phone = htmlspecialchars($phone);
+    $address = htmlspecialchars($address);
+    $staff_role = htmlspecialchars($staff_role);
+    $hire_date = htmlspecialchars($hire_date);
+    $salary = htmlspecialchars($salary);
 
 
     // ####### VALIDATION START ######

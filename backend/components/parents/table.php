@@ -2,7 +2,7 @@
 
     <?php 
 
-    $get_parent_list_query = "SELECT * FROM Parents LEFT JOIN Users ON Parents.user_id = Users.user_id";
+    $get_parent_list_query = "SELECT * FROM Parents LEFT JOIN Users ON Parents.user_id = Users.user_id WHERE Users.status = 1";
     $statement = $pdo->prepare($get_parent_list_query);
     $statement->execute();
     $parents = [];
@@ -43,7 +43,7 @@
                                     <td><?= $parent['address'] ?></td>
                                     <td>
                                         <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-primary btn-sm">Edit</a>
-                                        <button class="btn btn-danger btn-sm">Suspend</button>
+                                        <a  href="user-suspend.php?id=<?= $parent['user_id'] ?>&from=parents.php" class="btn btn-danger btn-sm">Suspend</a>
                                     </td>
                                 </tr>
 
