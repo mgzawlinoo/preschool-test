@@ -58,6 +58,7 @@
             $statement->bindParam(":enrollment_date", $enrollment_date, PDO::PARAM_STR);
             $statement->execute();
 
+            $_SESSION['success'] = 'Student updated successfully';
             header("Location: students.php");
             exit();
 

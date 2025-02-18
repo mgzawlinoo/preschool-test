@@ -49,6 +49,7 @@
             $statement->bindParam(":address", $address, PDO::PARAM_STR);
             $statement->execute();
 
+            $_SESSION['success'] = 'Parent updated successfully';
             header("Location: parents.php");
             exit();
 

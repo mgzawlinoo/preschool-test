@@ -38,6 +38,8 @@
                     $statement->bindParam(":class_id", $class_id, PDO::PARAM_INT);
                     $statement->bindParam(":parent_id", $parent_id, PDO::PARAM_INT);
                     $statement->execute();
+
+                    $_SESSION['success'] = 'Student added successfully';
                 }
                 catch (PDOException $e) {
                     echo $e->getMessage();
@@ -65,6 +67,13 @@
                         <i class="bi bi-plus-lg"></i> Add New Student
                     </button>
                 </div>
+
+                <?php if(isset($_SESSION['success'])) :  ?>
+                    <div class="alert alert-success">
+                        <?php echo $_SESSION['success']; ?>
+                        <?php unset($_SESSION['success']); ?>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Filters -->
                 <!-- <?php include 'components/students/filters.php'; ?> -->

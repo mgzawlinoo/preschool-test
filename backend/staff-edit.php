@@ -112,6 +112,7 @@
                     $statement->bindParam(":address", $address, PDO::PARAM_STR);
                     $statement->execute();
     
+                    $_SESSION['success'] = 'Staff updated successfully';
                     header("Location: staff.php");
                     exit();
     
@@ -220,7 +221,7 @@
 
                                 <div class="row">
                                     <div class="col-lg-8 offset-lg-2 mb-3 text-center">
-                                        <a href="teachers.php" class="btn btn-secondary">Cancel</a>
+                                        <a href="staff.php" class="btn btn-secondary">Cancel</a>
                                         <button type="submit" name="update_staff" class="btn btn-primary">Update Staff</button>
                                     </div>
                                 </div>

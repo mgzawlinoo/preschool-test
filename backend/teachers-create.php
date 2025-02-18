@@ -151,6 +151,7 @@
         }
 
 ?>
+
     <div class="wrapper">
         <!-- Sidebar -->
         <?php include 'components/sidebar.php'; ?>

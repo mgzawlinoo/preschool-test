@@ -22,6 +22,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Photo</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -37,6 +38,7 @@
                             <?php foreach($parents as $parent) : ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
+                                    <td><img src="<?= $parent['photo'] ? './uploads/' . $parent['photo'] : 'https://placehold.co/32' ?>" alt="" width="50px"></td>
                                     <td><?= $parent['name'] ?></td>
                                     <td><?= $parent['email'] ?></td>
                                     <td><?= $parent['phone'] ?></td>

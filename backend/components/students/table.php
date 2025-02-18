@@ -22,6 +22,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Photo</th>
                         <th>Name</th>
                         <th>Date of Birth</th>
                         <th>Gender</th>
@@ -40,6 +41,7 @@
                             <?php foreach($students as $student) : ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
+                                    <td><img src="<?= $student['photo'] ? './uploads/' . $student['photo'] : 'https://placehold.co/32' ?>" alt="" width="50px"></td>
                                     <td><?= $student['student_name'] ?></td>
                                     <td><?= $student['date_of_birth'] ?></td>
                                     <td><?= $student['gender'] ?></td>
