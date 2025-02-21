@@ -1,5 +1,13 @@
 <?php 
-    $user = isset($_SESSION['user']['user_id']);
+   if(isset($_SESSION['user']) && 
+   isset($_SESSION['user']['user_id']) && 
+   isset($_SESSION['user']['name']) && 
+   isset($_SESSION['user']['role']) && 
+   $_SESSION['user']['role'] == "Parent") {
+       $user = $_SESSION['user'];
+   } else {
+       $user = false;
+   }
 ?>
 
 <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5 py-lg-0">
@@ -28,11 +36,18 @@
         </div>
 
         <?php if($user): ?>
-            Welcome, <?= $_SESSION['user']['role'] ?>
-        <a href="logout.php" class="btn btn-danger rounded-pill mx-2 px-3 d-none d-lg-block">Logout<i class="fa fa-sign-in-alt ms-3"></i></a>
-        <?php else: ?>
-        <a href="login.php" class="btn btn-primary rounded-pill mx-2 px-3 d-none d-lg-block">Login<i class="fa fa-sign-in-alt ms-3"></i></a>
-        <?php endif; ?>
-
+           <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                <img width="32px" height="32px" src="<?= empty($user['photo']) ? 'http://placehold.co/32' : $user['photo'] ?>" class="rounded-circle me-2" alt="Admin">
+                <span><?= $user['name'] ?></span></a>
+              <div class="dropdown-menu rounded-0 mb-0 pb-0 border-0 shadow-sm m-0">
+                 <a href="index.php" class="py-2 dropdown-item">Home</a>
+                 <a href="profile.php" class="py-2 dropdown-item">Profile</a>
+                 <a href="logout.php" class="py-2 dropdown-item ">Logout</a>
+              </div>
+           </div>
+         <?php else: ?>
+            <a href="login.php" class="btn btn-primary rounded-pill mx-2 px-3 d-none d-lg-block">Login<i class="fa fa-sign-in-alt ms-3"></i></a>
+        <?php endif; ?>   
     </div>
 </nav>

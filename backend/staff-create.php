@@ -6,7 +6,7 @@
         // Add New Staff
         if (isset($_POST['add_staff']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $error = [];
+            $errors = [];
             
             // trim inputs value
             $name = trim($_POST['name']);
@@ -32,35 +32,37 @@
 
             // check empty fields
             if (empty($name) || empty($email) || empty($phone) || empty($staff_role) || empty($hire_date) || empty($salary) || empty($address) || empty($password) || empty($confirm_password) || empty($_FILES['photo']['name'])) {
-                $error['empty'] = 'All fields are required';
+                $errors['empty'] = 'All fields are required';
             }
 
             else {
                 // check valid email
                 if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $error['email'] = 'Invalid Email Format';
+                    $errors['email'] = 'Invalid Email Format';
                 }
 
                 // check password match
                 if ($password != $confirm_password) {
-                    $error['password'] = 'Password does not match';
+                    $errors['password'] = 'Password does not match';
                 }
 
                 // check password length
                 if(strlen($password) < 6) {
-                    $error['password'] = 'Password must be at least 6 characters';
+                    $errors['password'] = 'Password must be at least 6 characters';
                 }
 
                 // check image 
                 // check if file is uploaded
                 if($_FILES['photo']['error'] == 0 && !empty($_FILES['photo']['name'])) {
 
+                    $photoname = $_FILES['photo']['name'];  
+
                     // get file extension
                     $photoextension = pathinfo($photoname, PATHINFO_EXTENSION);
 
                     $phototype = $_FILES['photo']['type'];
                     if($phototype != 'image/jpeg' && $phototype != 'image/png' && $phototype != 'image/jpg') {
-                        $error['photo'] = 'Invalid file type';
+                        $errors['photo'] = 'Invalid file type';
                     }
         
                     $phototmpname = $_FILES['photo']['tmp_name'];  
@@ -68,13 +70,13 @@
                     // validate file size
                     $phototmpsize = $_FILES['photo']['size'];
                     if($phototmpsize > 5000000) {
-                        $error['photo'] = 'File size not more than 5MB';
+                        $errors['photo'] = 'File size not more than 5MB';
                     }
 
                     // if the file is not an image, throw an error
                     $check = getimagesize($phototmpname);
                     if($check === false) {
-                        $error['photo'] = "File is not an image";
+                        $errors['photo'] = "File is not an image";
                     }
 
                     // move the file to the uploads directory
@@ -85,7 +87,7 @@
 
                     // check directory write permissions
                     if(!is_writable('uploads')) {
-                        $error['photo'] = "Uploads directory is not writable";
+                        $errors['photo'] = "Uploads directory is not writable";
                     }
 
                 }
@@ -98,16 +100,15 @@
                     $statement->execute();
                     $user = $statement->fetch(PDO::FETCH_ASSOC);
                     if($user) {
-                        $error['email'] = 'Email already exists';
+                        $errors['email'] = 'Email already exists';
                     }
                 }
                 catch (PDOException $e) {
-                    echo "Error: " . $e->getMessage();
-                    exit;
+                    $errors['dberror'] = $e->getMessage();
                 }
             }
 
-            if(count($error) == 0) {
+            if(count($errors) == 0) {
                 try {
                     $role = 'Staff';
                     $password = password_hash($password, PASSWORD_DEFAULT);
@@ -138,8 +139,7 @@
                     exit;
                 }
                 catch (PDOException $e) {
-                    echo $e->getMessage();
-                    exit;
+                    $errors['dberror'] = $e->getMessage();
                 }
             }
         }
@@ -161,10 +161,10 @@
                     <h2 class="mb-0">Add Staff</h2>
                 </div>
 
-                <?php if(isset($error) && count($error) > 0) : ?>
+                <?php if(isset($errors) && count($errors) > 0) : ?>
                     <div class="alert alert-danger">
-                        <?php foreach($error as $e) : ?>
-                            <li><?php echo $e; ?></li>
+                        <?php foreach($errors as $error) : ?>
+                            <li><?php echo $error; ?></li>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
@@ -205,7 +205,7 @@
                                 <option value="">Select Staff Role</option>
                                 <?php
                                     // staff role array 
-                                    $staff_roles = ['Admin', 'Assistant', 'Other'];
+                                    $staff_roles = ['HR', 'Accountant', 'Driver', 'Cleaner'];
                                 ?>
                                 <!-- Show Teacher List with foreach loop -->
                                 <?php foreach($staff_roles as $staff_role) : ?>

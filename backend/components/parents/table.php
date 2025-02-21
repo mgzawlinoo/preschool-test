@@ -2,7 +2,7 @@
 
     <?php 
 
-    $get_parent_list_query = "SELECT * FROM Parents LEFT JOIN Users ON Parents.user_id = Users.user_id WHERE Users.status = 1";
+    $get_parent_list_query = "SELECT * FROM Parents LEFT JOIN Users ON Parents.user_id = Users.user_id WHERE Users.status = 'active'";
     $statement = $pdo->prepare($get_parent_list_query);
     $statement->execute();
     $parents = [];
@@ -17,7 +17,7 @@
 <div class="card">
     <div class="card-body">
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="min-height: 320px;">
             <table class="table" id="parentsTable">
                 <thead>
                     <tr>
@@ -27,6 +27,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Address</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -44,8 +45,28 @@
                                     <td><?= $parent['phone'] ?></td>
                                     <td><?= $parent['address'] ?></td>
                                     <td>
-                                        <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-primary btn-sm">Edit</a>
-                                        <a  href="user-suspend.php?id=<?= $parent['user_id'] ?>&from=parents.php" class="btn btn-danger btn-sm">Suspend</a>
+                                        <?php if($parent['status'] == 'active') : ?>
+                                            <span class="text-success">Active</span>
+                                        <?php elseif($parent['status'] == 'suspend') : ?>
+                                            <span class="text-danger">Suspend</span>
+                                        <?php else : ?>
+                                            <span class="text-warning">Pending</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-secondary">Edit</a>
+                                        
+                                        <div class="dropdown d-inline-block">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Change Status
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $parent['user_id'] ?>&status=active&from=parents.php">Active</a></li>
+                                                <li><a class="dropdown-item text-danger" href="user-change-status.php?id=<?= $parent['user_id'] ?>&status=suspend&from=parents.php">Suspend</a></li>
+                                                <li><a class="dropdown-item text-warning" href="user-change-status.php?id=<?= $parent['user_id'] ?>&status=pending&from=parents.php">Pending</a></li>
+                                            </ul>
+                                        </div>
+
                                     </td>
                                 </tr>
 

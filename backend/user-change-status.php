@@ -4,6 +4,7 @@ include '../database/db.php';
 
 if(isset($_GET['id']) && $_SERVER['REQUEST_METHOD'] === 'GET')  {
     $id = trim($_GET['id']);
+    $status = trim($_GET['status']);
     $from = trim($_GET['from'] ?? 'users.php');
     $page = trim($_GET['page'] ?? '');
 
@@ -20,14 +21,23 @@ if(isset($_GET['id']) && $_SERVER['REQUEST_METHOD'] === 'GET')  {
         exit;
     }
 
+    // check text from array list 
+    $status_list = ['active', 'suspend', 'pending'];
+    if(!in_array($status, $status_list)) {
+        $_SESSION['error'] = 'Invalid status';
+        header("Location: {$from}");
+        exit;
+    }
+
     // change user status to 0 
-    $update_status_query = "UPDATE Users SET status = 0 WHERE user_id = :user_id";
+    $update_status_query = "UPDATE Users SET status = :status WHERE user_id = :user_id";
     $statement = $pdo->prepare($update_status_query);
     $statement->bindParam(":user_id", $id, PDO::PARAM_INT);
+    $statement->bindParam(":status", $status, PDO::PARAM_STR);
     $statement->execute();
 
     // redirect to the page
-    $_SESSION['success'] = 'Account suspend successfully';
+    $_SESSION['success'] = 'Account status change successfully';
     if(isset($page)) {
         header("Location: {$from}?page={$page}");
         exit;

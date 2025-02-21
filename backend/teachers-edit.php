@@ -19,7 +19,7 @@
         // UPDATE TEACHER
         if (isset($_POST['update_teacher']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $error = [];
+            $errors = [];
             
             // trim inputs value
             $user_id = trim($_POST['user-id']);
@@ -46,59 +46,60 @@
             $address = htmlspecialchars($address);
 
             // check empty fields
-            if (empty($name) || empty($phone) || empty($position) || empty($experience) || empty($qualification) || empty($hire_date) || empty($salary) || empty($address)) {
-                $error['empty'] = 'All fields are required';
-            }
-
-            // update query for teachers
-
-            // check if file is uploaded
-            if($_FILES['photo']['error'] == 0 && !empty($_FILES['photo']['name'])) {
-
-                // get file extension
-                $photoextension = pathinfo($photoname, PATHINFO_EXTENSION);
-
-                $phototype = $_FILES['photo']['type'];
-                if($phototype != 'image/jpeg' && $phototype != 'image/png' && $phototype != 'image/jpg') {
-                    $error['photo'] = 'Invalid file type';
-                }
-    
-                $phototmpname = $_FILES['photo']['tmp_name'];  
-
-                // validate file size
-                $phototmpsize = $_FILES['photo']['size'];
-                if($phototmpsize > 5000000) {
-                    $error['photo'] = 'File size not more than 5MB';
-                }
-
-                // if the file is not an image, throw an error
-                $check = getimagesize($phototmpname);
-                if($check === false) {
-                    $error['photo'] = "File is not an image";
-                }
-
-                // move the file to the uploads directory
-                // check folder exists
-                if(!is_dir('uploads')) {
-                    mkdir('uploads');
-                }
-
-                // check directory write permissions
-                if(!is_writable('uploads')) {
-                    $error['photo'] = "Uploads directory is not writable";
-                }
-
-                $photoname = $user_id . '.' . $photoextension;
-                $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
-                if(!$upload_result) {
-                    $error['photo'] = "Failed to upload file";
-                }
+            if (empty($user_id) || empty($teacher_id) || empty($name) || empty($phone) || empty($position) || empty($experience) || empty($qualification) || empty($hire_date) || empty($salary) || empty($address)) {
+                $errors['empty'] = 'All fields are required';
             }
             else {
-                $photoname = $teacher['photo'];
+                // check if file is uploaded
+                if(isset($_FILES['photo']) && $_FILES['photo']['error'] == 0 && !empty($_FILES['photo']['name'])) {
+
+                    $photoname = $_FILES['photo']['name'];
+
+                    // get file extension
+                    $photoextension = pathinfo($photoname, PATHINFO_EXTENSION);
+
+                    $phototype = $_FILES['photo']['type'];
+                    if($phototype != 'image/jpeg' && $phototype != 'image/png' && $phototype != 'image/jpg') {
+                        $errors['photo'] = 'Invalid file type';
+                    }
+
+                    $phototmpname = $_FILES['photo']['tmp_name'];  
+
+                    // validate file size
+                    $phototmpsize = $_FILES['photo']['size'];
+                    if($phototmpsize > 5000000) {
+                        $errors['photo'] = 'File size not more than 5MB';
+                    }
+
+                    // if the file is not an image, throw an error
+                    $check = getimagesize($phototmpname);
+                    if($check === false) {
+                        $errors['photo'] = "File is not an image";
+                    }
+
+                    // move the file to the uploads directory
+                    // check folder exists
+                    if(!is_dir('uploads')) {
+                        mkdir('uploads');
+                    }
+
+                    // check directory write permissions
+                    if(!is_writable('uploads')) {
+                        $errors['photo'] = "Uploads directory is not writable";
+                    }
+
+                    $photoname = $user_id . '.' . $photoextension;
+                    $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
+                    if(!$upload_result) {
+                        $errors['photo'] = "Failed to upload file";
+                    }
+                }
+                else {
+                    $photoname = $teacher['photo'];
+                }
             }
 
-            if(count($error) == 0) {
+            if(count($errors) == 0) {
                 try {
                     $update_teacher_query = "UPDATE Teachers SET name=:name, position=:position, phone=:phone, photo=:photo, experience=:experience, qualification=:qualification, hire_date=:hire_date, salary=:salary, address=:address WHERE teacher_id=:teacher_id"; //error
                     $statement = $pdo->prepare($update_teacher_query);
@@ -120,7 +121,7 @@
     
                 }
                 catch (PDOException $e) {
-                    echo $e->getMessage();
+                    $errors['dberror'] = $e->getMessage();
                 }
             }
             
@@ -143,10 +144,10 @@
                     <h2 class="mb-0">Update Teacher</h2>
                 </div>
 
-                <?php if(isset($error) && count($error) > 0) : ?>
+                <?php if(isset($errors) && count($errors) > 0) : ?>
                     <div class="alert alert-danger">
-                        <?php foreach($error as $e) : ?>
-                            <li><?php echo $e; ?></li>
+                        <?php foreach($errors as $error) : ?>
+                            <li><?= $error; ?></li>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>

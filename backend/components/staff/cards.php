@@ -51,11 +51,29 @@
                             </div>
                         </div>
                         
-                        <div class="mt-3 d-flex justify-content-between">
+                        <div class="mt-3 d-flex justify-content-between align-items-center">
 
-                            <a class="btn btn-primary text-white text-decoration-none" href="staff-edit.php?id=<?= $staff['staff_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
+                        <a class="btn btn-secondary text-white text-decoration-none" href="teachers-edit.php?id=<?= $teacher['teacher_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
 
-                            <a  href="user-suspend.php?id=<?= $staff['user_id'] ?>&from=staff.php" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Suspend</a>
+                            <div class="text-center">
+                                <?php if($staff['status'] == 'active') : ?>
+                                    <span class="text-success">Active</span>
+                                <?php elseif($staff['status'] == 'suspend') : ?>
+                                    <span class="text-danger">Suspend</span>
+                                <?php else : ?>
+                                    <span class="text-warning">Pending</span>
+                                <?php endif; ?>
+
+                                <div class="dropdown d-block">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Change Status
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $staff['user_id'] ?>&status=active&from=staff.php">Active</a></li>
+                                        <li><a class="dropdown-item text-danger" href="user-change-status.php?id=<?= $staff['user_id'] ?>&status=suspend&from=staff.php">Suspend</a></li>
+                                        <li><a class="dropdown-item text-warning" href="user-change-status.php?id=<?= $staff['user_id'] ?>&status=pending&from=staff.php">Pending</a></li>
+                                    </ul>
+                                </div>
                         </div>
                     </div>
                 </div>

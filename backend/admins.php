@@ -12,11 +12,11 @@
 
             <!-- Main Content -->
             <div class="container-fluid p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Admin Management</h2>
-                    <a href="admins-create.php" class="btn btn-primary">
+                <div class="bg-warning text-black p-4 rounded d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-person-square me-2"></i> Admin Management</h2>
+                    <!-- <a href="admins-create.php" class="btn btn-primary">
                         <i class="bi bi-plus-lg"></i> Add New Admin
-                    </a>
+                    </a> -->
                 </div>
 
                 <?php if(isset($_SESSION['success'])) :  ?>

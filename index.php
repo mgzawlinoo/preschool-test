@@ -2,17 +2,6 @@
 <!-- Header Start -->
 <?php include("./layouts/header.php"); ?>
 
-    <!-- Show Welcome User Message -->
-    <?php  if(isset($_GET['success']) && $_GET['success'] == "true") : ?>
-        <div class="container my-3">
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                Login Successful
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    <?php endif; ?>
-    <!-- End Show Welcome User Message -->
-
     <div class="container-xxl bg-white p-0">
 
         <!-- Spinner Start -->

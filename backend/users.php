@@ -90,14 +90,16 @@
                                                     <td><?= $user['email'] ?></td>
                                                     <td><?= $user['role'] ?></td>
                                                     <td>
-                                                            <?php if($user['status'] == 1) : ?>
-                                                                <span class="text-success">Active</span>
-                                                            <?php else : ?>
-                                                                <span class="text-danger">Suspend</span>
-                                                            <?php endif; ?>
+                                                        <?php if($user['status'] == 'active') : ?>
+                                                            <span class="text-success">Active</span>
+                                                        <?php elseif($user['status'] == 'suspend') : ?>
+                                                            <span class="text-danger">Suspend</span>
+                                                        <?php else : ?>
+                                                            <span class="text-warning">Pending</span>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td class="text-end">
-                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="text-white btn btn-warning btn-sm">Reset Password</a>
+                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="text-white btn btn-warning ">Reset Password</a>
 
                                                         <?php 
                                                             $role = [
@@ -109,14 +111,19 @@
                                                         ?>
                                                         
                                                         <?php if(array_key_exists($user['role'], $role)) : ?>
-                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-secondary btn-sm">Edit</a>
+                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-secondary">Edit</a>
                                                         <?php endif; ?>
 
-                                                        <?php if($user['status'] == 1) : ?>
-                                                            <a href="user-suspend.php?id=<?= $user['user_id'] ?>&from=users.php&page=<?= $page ?>" class="btn btn-danger btn-sm">Suspend</a>
-                                                        <?php else : ?>
-                                                            <a href="user-unsuspend.php?id=<?= $user['user_id'] ?>&from=users.php&page=<?= $page ?>" class="btn btn-success btn-sm">Activate</a>
-                                                        <?php endif; ?>
+                                                        <div class="dropdown d-inline-block">
+                                                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                Change Status
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $user['user_id'] ?>&status=active&from=users.php&page=<?= $page ?>">Active</a></li>
+                                                                <li><a class="dropdown-item text-danger" href="user-change-status.php?id=<?= $user['user_id'] ?>&status=suspend&from=users.php&page=<?= $page ?>">Suspend</a></li>
+                                                                <li><a class="dropdown-item text-warning" href="user-change-status.php?id=<?= $user['user_id'] ?>&status=pending&from=users.php&page=<?= $page ?>">Pending</a></li>
+                                                            </ul>
+                                                        </div>
 
                                                     </td>
                                                     

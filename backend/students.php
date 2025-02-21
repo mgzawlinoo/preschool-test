@@ -2,51 +2,108 @@
 <?php include 'layouts/header.php'; ?>
 
 <?php 
-        // Add Student
-        if (isset($_POST['add_student']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $error = [];
+    $errors = [];
+    // Add Student
+    if (isset($_POST['add_student']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            // trim inputs value
-            $name = trim($_POST['name']);
-            $date_of_birth = trim($_POST['date_of_birth']);
-            $gender = trim($_POST['gender']);
-            $enrollment_date = trim($_POST['enrollment_date']);
-            $class_id = trim($_POST['class_id']);
-            $parent_id = trim($_POST['parent_id']);
+        // trim inputs value
+        $name = trim($_POST['name']);
+        $date_of_birth = trim($_POST['date_of_birth']);
+        $gender = trim($_POST['gender']);
+        $enrollment_date = trim($_POST['enrollment_date']);
+        $class_id = trim($_POST['class_id']);
+        $parent_id = trim($_POST['parent_id']);
 
-            // filter inputs
-            $name = htmlspecialchars($name);
-            $date_of_birth = htmlspecialchars($date_of_birth);
-            $gender = htmlspecialchars($gender);
-            $enrollment_date = htmlspecialchars($enrollment_date);
-            $class_id = filter_var($class_id, FILTER_SANITIZE_NUMBER_INT);
-            $parent_id = filter_var($parent_id, FILTER_SANITIZE_NUMBER_INT);
+        // filter inputs
+        $name = htmlspecialchars($name);
+        $date_of_birth = htmlspecialchars($date_of_birth);
+        $gender = htmlspecialchars($gender);
+        $enrollment_date = htmlspecialchars($enrollment_date);
+        $class_id = filter_var($class_id, FILTER_SANITIZE_NUMBER_INT);
+        $parent_id = filter_var($parent_id, FILTER_SANITIZE_NUMBER_INT);
 
-            if(empty($name) || empty($date_of_birth) || empty($gender) || empty($enrollment_date) || empty($class_id) || empty($parent_id)) {
-                $error['name'] = 'All fields are required';
-            }
-
-            if(count($error) == 0) {
-                try {
-                    $add_class_query = "INSERT INTO Students (name, date_of_birth, gender, enrollment_date, class_id, parent_id) VALUES (:name, :date_of_birth, :gender, :enrollment_date, :class_id, :parent_id)";
-                    $statement = $pdo->prepare($add_class_query);
-                    $statement->bindParam(":name", $name, PDO::PARAM_STR);
-                    $statement->bindParam(":date_of_birth", $date_of_birth, PDO::PARAM_STR);
-                    $statement->bindParam(":gender", $gender, PDO::PARAM_STR);
-                    $statement->bindParam(":enrollment_date", $enrollment_date, PDO::PARAM_STR);
-                    $statement->bindParam(":class_id", $class_id, PDO::PARAM_INT);
-                    $statement->bindParam(":parent_id", $parent_id, PDO::PARAM_INT);
-                    $statement->execute();
-
-                    $_SESSION['success'] = 'Student added successfully';
-                }
-                catch (PDOException $e) {
-                    echo $e->getMessage();
-                }
-            }
-            
+        if(empty($name) || empty($date_of_birth) || empty($gender) || empty($enrollment_date) || empty($class_id) || empty($parent_id) || empty($_FILES['photo']['name'])) {
+            $errors['name'] = 'All fields are required';
         }
+        else {
+                // check image 
+            // check if file is uploaded
+            if($_FILES['photo']['error'] == 0 && !empty($_FILES['photo']['name'])) {
+
+                $photoname = $_FILES['photo']['name'];  
+
+                // get file extension
+                $photoextension = pathinfo($photoname, PATHINFO_EXTENSION);
+
+                $phototype = $_FILES['photo']['type'];
+                if($phototype != 'image/jpeg' && $phototype != 'image/png' && $phototype != 'image/jpg') {
+                    $errors['photo'] = 'Invalid file type';
+                }
+    
+                $phototmpname = $_FILES['photo']['tmp_name'];  
+
+                // validate file size
+                $phototmpsize = $_FILES['photo']['size'];
+                if($phototmpsize > 5000000) {
+                    $errors['photo'] = 'File size not more than 5MB';
+                }
+
+                // if the file is not an image, throw an error
+                $check = getimagesize($phototmpname);
+                if($check === false) {
+                    $errors['photo'] = "File is not an image";
+                }
+
+                // move the file to the uploads directory
+                // check folder exists
+                if(!is_dir('uploads')) {
+                    mkdir('uploads');
+                }
+
+                // check directory write permissions
+                if(!is_writable('uploads')) {
+                    $errors['photo'] = "Uploads directory is not writable";
+                }
+
+            }
+        }
+
+        if(count($errors) == 0) {
+            try {
+                $add_class_query = "INSERT INTO Students (name, date_of_birth, gender, enrollment_date, class_id, parent_id, photo) VALUES (:name, :date_of_birth, :gender, :enrollment_date, :class_id, :parent_id, :photo)";
+                $statement = $pdo->prepare($add_class_query);
+                $statement->bindParam(":name", $name, PDO::PARAM_STR);
+                $statement->bindParam(":date_of_birth", $date_of_birth, PDO::PARAM_STR);
+                $statement->bindParam(":gender", $gender, PDO::PARAM_STR);
+                $statement->bindParam(":enrollment_date", $enrollment_date, PDO::PARAM_STR);
+                $statement->bindParam(":class_id", $class_id, PDO::PARAM_INT);
+                $statement->bindParam(":parent_id", $parent_id, PDO::PARAM_INT);
+                $statement->bindParam(":photo", $photoname, PDO::PARAM_STR);
+                $statement->execute();
+
+                $student_id = $pdo->lastInsertId();
+
+                $photoname = 's_'.$student_id . '.' . $photoextension;
+                $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
+                if(!$upload_result) {
+                    $errors['photo'] = "Failed to upload file";
+                }
+
+                $add_payment_query = "INSERT INTO Payments (student_id, class_id) VALUES (:student_id, :class_id)";
+                $statement = $pdo->prepare($add_payment_query);
+                $statement->bindParam(":student_id", $student_id, PDO::PARAM_INT);
+                $statement->bindParam(":class_id", $class_id, PDO::PARAM_INT);
+                $statement->execute();
+
+                $_SESSION['success'] = 'Student added successfully';
+            }
+            catch (PDOException $e) {
+                $errors['dberror'] = $e->getMessage();
+            }
+        }
+        
+    }
 
 ?>
 
@@ -61,12 +118,20 @@
 
             <!-- Main Content -->
             <div class="container-fluid p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Student Management</h2>
+                <div class="bg-warning text-black p-4 rounded d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-person-circle"></i> Student Management</h2>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                        <i class="bi bi-plus-lg"></i> Add New Student
+                        <i class="bi bi-person-plus"></i> Add New Student
                     </button>
                 </div>
+
+                <?php if(isset($errors) && count($errors) > 0) : ?>
+                    <div class="alert alert-danger">
+                        <?php foreach($errors as $error) : ?>
+                            <li><?php echo $error; ?></li>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 <?php if(isset($_SESSION['success'])) :  ?>
                     <div class="alert alert-success">
@@ -76,15 +141,7 @@
                 <?php endif; ?>
 
                 <!-- Filters -->
-                <!-- <?php include 'components/students/filters.php'; ?> -->
-
-                <?php if(isset($error) && count($error) > 0) : ?>
-                    <div class="alert alert-danger">
-                        <?php foreach($error as $e) : ?>
-                            <li><?php echo $e; ?></li>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                <?php include './components/students/filters.php'; ?>
 
                 <!-- Students Table -->
                 <?php include 'components/students/table.php'; ?>
@@ -96,16 +153,25 @@
     <div class="modal fade" id="addStudentModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Student</h5>
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i> Add New Student</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
 
-                    <form action="students.php" method="POST">
+                    <form action="students.php" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label class="form-label">Student Name</label>
                             <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3 d-flex align-items-center justify-content-center">
+                            <div id="preview-image"><img src="https://placehold.co/150" class="rounded-circle" style="max-width: 150px; height: auto" alt="Staff"></div>
+                            <div class="w-100 ps-5">
+                                <label class="form-label" for="photo">Photo</label>
+                                <input accept="image/jpeg, image/png, image/jpg" type="file" name="photo" class="form-control" id="photo">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Date of Birth</label>
@@ -195,5 +261,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const chooseFile = document.getElementById("photo");
+        const imgPreview = document.getElementById("preview-image");
+
+        chooseFile.addEventListener("change", function () {
+            getImgData();
+        });
+
+        function getImgData() {
+            const files = chooseFile.files[0];
+            if (files) {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(files);
+                fileReader.addEventListener("load", function () {
+                imgPreview.style.display = "block";
+                imgPreview.innerHTML = '<img class="rounded-circle" style="max-width: 150px; height: auto" alt="Teacher" src="' + this.result + '" />';
+                });    
+            }
+        }
+    </script>
 
 <?php include 'layouts/footer.php'; ?>

@@ -1,19 +1,33 @@
 <div class="row">
 
+    <!-- Connect to Database and get Admin List -->
     <?php 
-
-    $get_admin_list_query = "SELECT * FROM Admins LEFT JOIN Users ON Admins.user_id = Users.user_id";
-    $statement = $pdo->prepare($get_admin_list_query);
-    $statement->execute();
-    $admins = [];
-
-    // fetch teacher with while loop
-    while($admin = $statement->fetch(PDO::FETCH_ASSOC)) {
-        $admins[] = $admin;
+    $errors = [];
+    try {
+        $get_admin_list_query = "SELECT * FROM Admins LEFT JOIN Users ON Admins.user_id = Users.user_id";
+        $statement = $pdo->prepare($get_admin_list_query);
+        $statement->execute();
+        $admins = [];
+        // fetch teacher with while loop
+        while($admin = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $admins[] = $admin;
+        }
+    } catch (Exception $e) {
+        $errors['dberror'] = $e->getMessage();
     }
 
     ?>
 
+    <!-- Show Error -->
+    <?php if(isset($errors) && count($errors) > 0) : ?>
+        <div class="alert alert-danger">
+            <?php foreach($errors as $error) : ?>
+                <li><?php echo $error; ?></li>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Show Admin List -->
     <?php if(count($admins) > 0) : ?>
 
         <!-- Show Admin List with foreach loop -->

@@ -47,11 +47,30 @@ while($teacher = $statement->fetch(PDO::FETCH_ASSOC)) {
                         <p><i class="bi bi-envelope me-2"></i><?= $teacher['email'] ?></p>
                         <p><i class="bi bi-telephone me-2"></i><?= $teacher['phone'] ?></p>
                     </div>
-                    <div class="mt-3 d-flex justify-content-between">
+                    <div class="mt-3 d-flex justify-content-between align-items-center">
 
-                        <a class="btn btn-primary text-white text-decoration-none" href="teachers-edit.php?id=<?= $teacher['teacher_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
+                        <a class="btn btn-secondary text-white text-decoration-none" href="teachers-edit.php?id=<?= $teacher['teacher_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
 
-                        <a class="btn btn-outline-danger" href="user-suspend.php?id=<?= $teacher['user_id'] ?>&from=teachers.php"><i class="bi bi-trash"></i> Suspend</a>
+                        <div class="text-center">
+                            <?php if($teacher['status'] == 'active') : ?>
+                                <span class="text-success">Active</span>
+                            <?php elseif($teacher['status'] == 'suspend') : ?>
+                                <span class="text-danger">Suspend</span>
+                            <?php else : ?>
+                                <span class="text-warning">Pending</span>
+                            <?php endif; ?>
+
+                            <div class="dropdown d-block">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Change Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $teacher['user_id'] ?>&status=active&from=teachers.php">Active</a></li>
+                                    <li><a class="dropdown-item text-danger" href="user-change-status.php?id=<?= $teacher['user_id'] ?>&status=suspend&from=teachers.php">Suspend</a></li>
+                                    <li><a class="dropdown-item text-warning" href="user-change-status.php?id=<?= $teacher['user_id'] ?>&status=pending&from=teachers.php">Pending</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
