@@ -81,7 +81,7 @@
                                             </ul>
                                         </div>
 
-                                        <?php if($student['payment_status'] == 'unpaid' || $student['payment_status'] == 'checking') : ?>
+                                        <?php if( $student['student_status'] == 'active' &&  $student['payment_status'] == 'checking' ) : ?>
                                             <a href="student-payment.php?id=<?= $student['student_id'] ?>&payment_id=<?= $student['payment_id'] ?>" class="btn btn-success"><i class="bi bi-cash"></i> Check Payment</a>
                                         <?php endif; ?>
 
