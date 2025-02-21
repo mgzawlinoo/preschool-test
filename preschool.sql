@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 12, 2025 at 04:54 PM
+-- Generation Time: Feb 21, 2025 at 12:35 PM
 -- Server version: 8.0.41-0ubuntu0.22.04.1
 -- PHP Version: 8.2.27
 
@@ -41,7 +41,7 @@ CREATE TABLE `Admins` (
 --
 
 INSERT INTO `Admins` (`admin_id`, `user_id`, `name`, `photo`, `phone`, `address`) VALUES
-(7, 75, 'admin', '7_75.png', '+95912345678', 'No(3) A street, B Township, Yangon');
+(1, 1, 'admin', '1.png', '092345678', 'sample address');
 
 -- --------------------------------------------------------
 
@@ -65,23 +65,24 @@ CREATE TABLE `Attendance` (
 
 CREATE TABLE `Classes` (
   `class_id` int NOT NULL,
+  `teacher_id` int NOT NULL,
   `class_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `age` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `teacher_id` int DEFAULT NULL,
+  `fees` int NOT NULL,
+  `age_group` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `max_students` int DEFAULT NULL,
   `schedule` text COLLATE utf8mb4_unicode_ci,
-  `start_date` date NOT NULL
+  `start_date` date NOT NULL,
+  `status` enum('active','inactive') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `Classes`
 --
 
-INSERT INTO `Classes` (`class_id`, `class_name`, `age`, `teacher_id`, `max_students`, `schedule`, `start_date`) VALUES
-(9, 'The Circle Room', '2-3 years', 23, 10, 'Mon-Fri, 1:00 PM - 4:00 PM', '2025-02-01'),
-(10, 'The Sunshine Room', '2-3 years', 25, 15, 'Mon-Fri, 9:00 AM - 12:00 PM', '2025-01-22'),
-(11, 'Fun Friends Preschool', '4-5 years', 24, 68, 'Mon-Fri, 1:00 PM - 4:00 PM', '1997-03-18'),
-(12, 'The Bear Cubs Room', '4-5 years', 23, 34, 'Mon-Fri, 9:00 AM - 12:00 PM', '2008-10-10');
+INSERT INTO `Classes` (`class_id`, `teacher_id`, `class_name`, `fees`, `age_group`, `max_students`, `schedule`, `start_date`, `status`) VALUES
+(1, 29, 'Grade 1', 2000000, '4-5 Years', 10, 'Mon-Fri, 9:00 AM - 12:00 PM', '2025-02-01', 'active'),
+(2, 29, 'Grade 2', 3000000, '5-6 Years', 10, 'Mon-Fri, 9:00 AM - 12:00 PM', '2025-02-01', 'active'),
+(3, 29, 'Grade 3', 4000000, '6-7 Years', 10, 'Mon-Fri, 9:00 AM - 12:00 PM', '2025-02-01', 'active');
 
 -- --------------------------------------------------------
 
@@ -137,6 +138,7 @@ CREATE TABLE `Parents` (
   `parent_id` int NOT NULL,
   `user_id` int NOT NULL,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `address` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -145,10 +147,9 @@ CREATE TABLE `Parents` (
 -- Dumping data for table `Parents`
 --
 
-INSERT INTO `Parents` (`parent_id`, `user_id`, `name`, `phone`, `address`) VALUES
-(5, 67, 'U Kyaw Win', '+1 (571) 513-8036', 'Qui laborum cupidita'),
-(6, 71, 'Daw Hla Hla', '+1 (823) 444-7128', 'Et et ex et in neces'),
-(7, 72, 'Daw Thi Dar', '+1 (776) 521-1893', 'Et officia dolor ut');
+INSERT INTO `Parents` (`parent_id`, `user_id`, `name`, `photo`, `phone`, `address`) VALUES
+(3, 7, 'Daw Aye Aye', '7.png', '+1 (912) 594-4514', 'Est a doloremque sin'),
+(4, 9, 'U Ko Ko', '9.png', '23424242423', 'sample address');
 
 -- --------------------------------------------------------
 
@@ -158,12 +159,25 @@ INSERT INTO `Parents` (`parent_id`, `user_id`, `name`, `phone`, `address`) VALUE
 
 CREATE TABLE `Payments` (
   `payment_id` int NOT NULL,
-  `student_id` int DEFAULT NULL,
-  `payment_date` date NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `payment_method` enum('Cash','Credit Card','Bank Transfer') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `student_id` int NOT NULL,
+  `class_id` int NOT NULL,
+  `payment_date` timestamp NULL DEFAULT NULL,
+  `amount` int DEFAULT NULL,
+  `payment_method` enum('cash','kpay','bank transfer') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_status` enum('unpaid','paid','checking') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unpaid',
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `Payments`
+--
+
+INSERT INTO `Payments` (`payment_id`, `student_id`, `class_id`, `payment_date`, `amount`, `payment_method`, `payment_status`, `photo`, `description`) VALUES
+(1, 16, 1, NULL, NULL, NULL, 'unpaid', NULL, NULL),
+(2, 17, 1, NULL, NULL, NULL, 'unpaid', NULL, NULL),
+(3, 18, 1, NULL, NULL, NULL, 'unpaid', NULL, NULL),
+(4, 19, 2, NULL, NULL, NULL, 'unpaid', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -177,9 +191,9 @@ CREATE TABLE `Staff` (
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `staff_role` enum('Admin','Assistant','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `staff_role` enum('HR','Accountant','Driver','Cleaner') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `hire_date` date NOT NULL,
-  `salary` int DEFAULT NULL,
+  `salary` int NOT NULL,
   `address` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -188,8 +202,7 @@ CREATE TABLE `Staff` (
 --
 
 INSERT INTO `Staff` (`staff_id`, `user_id`, `name`, `photo`, `phone`, `staff_role`, `hire_date`, `salary`, `address`) VALUES
-(8, 73, 'U Soe Moe', '8_73.png', '+1 (647) 447-875778', 'Assistant', '2024-11-05', 200000, 'Voluptatum ut volupt'),
-(9, 74, 'U Aung Aung', '9_74.png', '+1 (842) 739-6447', 'Other', '2024-07-10', 300000, 'Accusamus sed et fug');
+(13, 8, 'Kyaw Soe', '8.png', '+1 (335) 717-1602', 'HR', '2024-12-12', 500000, 'Rerum quae sed fugia');
 
 -- --------------------------------------------------------
 
@@ -199,27 +212,25 @@ INSERT INTO `Staff` (`staff_id`, `user_id`, `name`, `photo`, `phone`, `staff_rol
 
 CREATE TABLE `Students` (
   `student_id` int NOT NULL,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `date_of_birth` date NOT NULL,
-  `gender` enum('Male','Female','Other') COLLATE utf8mb4_unicode_ci NOT NULL,
   `parent_id` int NOT NULL,
+  `class_id` int NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date_of_birth` date NOT NULL,
+  `gender` enum('male','female') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'male',
   `enrollment_date` date NOT NULL,
-  `class_id` int DEFAULT NULL
+  `status` enum('active','suspend','pending') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `Students`
 --
 
-INSERT INTO `Students` (`student_id`, `name`, `date_of_birth`, `gender`, `parent_id`, `enrollment_date`, `class_id`) VALUES
-(5, 'Chastity', '2015-09-11', 'Male', 5, '2025-02-11', 9),
-(6, 'Kirk Buck', '2001-12-21', 'Male', 6, '2012-12-31', 9),
-(7, 'Beverly Hopkins', '1981-09-30', 'Female', 7, '2010-02-05', 9),
-(8, 'Reece Hoffman', '2024-04-28', 'Female', 6, '1999-08-31', 11),
-(9, 'Tun Tun', '2020-11-01', 'Male', 6, '2025-02-01', 9),
-(10, 'Chaw Chaw', '2019-01-07', 'Female', 6, '2009-11-29', 10),
-(11, 'Kylie Robbins', '2017-01-02', 'Female', 5, '2025-02-11', 9),
-(12, 'Brennan Dunn', '2006-10-08', 'Female', 5, '2021-02-16', 9);
+INSERT INTO `Students` (`student_id`, `parent_id`, `class_id`, `name`, `photo`, `date_of_birth`, `gender`, `enrollment_date`, `status`) VALUES
+(16, 3, 1, 'Soe Moe', 's_16.png', '2021-12-25', 'male', '2025-02-21', 'pending'),
+(17, 3, 1, 'Thuzar', 's_17.png', '2022-02-10', 'female', '2025-02-21', 'pending'),
+(18, 3, 1, 'Tun Tun', 's_18.png', '2022-01-04', 'male', '2025-02-21', 'pending'),
+(19, 4, 2, 'Su Su', 's_19.png', '2021-02-21', 'female', '2025-02-21', 'active');
 
 -- --------------------------------------------------------
 
@@ -246,9 +257,7 @@ CREATE TABLE `Teachers` (
 --
 
 INSERT INTO `Teachers` (`teacher_id`, `user_id`, `name`, `photo`, `position`, `phone`, `experience`, `qualification`, `hire_date`, `salary`, `address`) VALUES
-(23, 68, 'Teacher Su Su', '23_68.jpg', 'Lead Teacher', '+1 (973) 843-5916', '15', 'MBA, B.A(English)', '2024-09-01', 2500000, 'Voluptatem Enim iur'),
-(24, 69, 'Teacher Thae Thae', '24_69.png', 'Assistant Teacher', '+1 (667) 369-4093', '5', 'B.A(English)', '2024-04-04', 1000000, 'Ullamco voluptatem'),
-(25, 70, 'Teacher Aye', '25_70.png', 'Substitute Teacher', '+1 (206) 982-9625', '3', 'B.A(English)', '2024-12-04', 70000, 'Voluptates magni dis');
+(29, 6, 'Teacher Su Su', '6.png', 'Lead Teacher', '+1 (382) 486-2475', '10', 'Tempor nesciunt lab', '2024-09-04', 700000, 'Expedita molestiae o');
 
 -- --------------------------------------------------------
 
@@ -261,6 +270,7 @@ CREATE TABLE `Users` (
   `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` enum('Teacher','Staff','Parent','Admin') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('active','suspend','pending') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -269,17 +279,12 @@ CREATE TABLE `Users` (
 -- Dumping data for table `Users`
 --
 
-INSERT INTO `Users` (`user_id`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'mgmg@gmail.com', '$2y$10$2oVlXja9i.uZzOhOK6qjmuqPJVqmq7e6u2lCDJOf6Bor095hFywmS', 'Parent', '2025-01-23 04:57:46', '2025-01-23 04:57:46'),
-(67, 'jedapyva@mailinator.com', '$2y$10$7Y7n3vp5O1Bi0LXC3f.UC.sbBm034pVaEe0Ohp9sDHL4OWd2KQwj.', 'Parent', '2025-02-05 22:51:27', '2025-02-05 22:51:27'),
-(68, 'dupovo@mailinator.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Teacher', '2025-02-05 22:51:45', '2025-02-05 22:51:45'),
-(69, 'teacherthaethae@gmail.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Teacher', '2025-02-05 22:52:01', '2025-02-05 22:52:01'),
-(70, 'vipizez@mailinator.com', '$2y$10$ylnJMwgjvce3Z5FfkjetSusp56UJRfxASEHUlI0DhNDxrJ9rAyCt2', 'Teacher', '2025-02-05 22:52:11', '2025-02-05 22:52:11'),
-(71, 'wizubagaga@mailinator.com', '$2y$10$F1929DWRE13vphIh07GQhuLwMTNcliIHjQzmmGSb2xv5XIQ3R/ff2', 'Parent', '2025-02-05 23:02:02', '2025-02-05 23:02:02'),
-(72, 'fihoqicat@mailinator.com', '$2y$10$K37K5ELHhpkb/rspACxvdepWU0kkT5bl6mTIluVuSsOaXTnIYkGMC', 'Parent', '2025-02-05 23:02:06', '2025-02-05 23:02:06'),
-(73, 'vapeqy@mailinator.com', '$2y$10$MbEdnpkn3JluQ/Q1gQrN5uUn4hiFX25uWJQxIPQmZXvdhaxptDnXy', 'Staff', '2025-02-11 09:15:01', '2025-02-11 09:15:01'),
-(74, 'sirih@mailinator.com', '$2y$10$uvQJkzjer/Pu.Q4PsRNQ1OeX/9zMUl7LcwRWz5NaEwu6B4UuGJvUe', 'Staff', '2025-02-11 09:15:41', '2025-02-11 09:15:41'),
-(75, 'admin@gmail.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Admin', '2025-02-12 04:02:45', '2025-02-12 04:02:45');
+INSERT INTO `Users` (`user_id`, `email`, `password`, `role`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'admin@gmail.com', '$2y$10$/Tcvx3OdY3RSq3yeE1VhFeWIblWEMCO5c1IjdLytE8bzKX7yJD/sW', 'Admin', 'active', '2025-02-20 15:48:32', '2025-02-20 15:48:32'),
+(6, 'susu@gmail.com', '$2y$10$OcSVYckTJZd7gI0SQNenCu0PJJdaxTUBT5X6uAqokT9hyrY1iz/H2', 'Teacher', 'active', '2025-02-21 06:34:26', '2025-02-21 06:34:26'),
+(7, 'dawayeaye@gmail.com', '$2y$10$IxWZjtbPA9G8NCdulMQh.u6LG6b3IpGvYCiPmNvE5yHqqL7BWpXj6', 'Parent', 'active', '2025-02-21 06:52:15', '2025-02-21 06:52:15'),
+(8, 'kyawsoe@gmail.com', '$2y$10$WQFkUtBDDou69z8rouNQ8eDtNh6eVD3nTFTLvAXs8c2d7MBnLV92C', 'Staff', 'active', '2025-02-21 07:02:37', '2025-02-21 07:02:37'),
+(9, 'ukoko@gmail.com', '$2y$10$inojzZDyIY7oBEhDrqIKpuhQWjqjk7zDvCYKcbguZyTTcPaF/vkz.', 'Parent', 'active', '2025-02-21 02:24:38', '2025-02-21 02:24:38');
 
 --
 -- Indexes for dumped tables
@@ -289,7 +294,8 @@ INSERT INTO `Users` (`user_id`, `email`, `password`, `role`, `created_at`, `upda
 -- Indexes for table `Admins`
 --
 ALTER TABLE `Admins`
-  ADD PRIMARY KEY (`admin_id`);
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `Attendance`
@@ -330,29 +336,30 @@ ALTER TABLE `Messages`
 --
 ALTER TABLE `Parents`
   ADD PRIMARY KEY (`parent_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `user_id` (`user_id`) USING BTREE;
 
 --
 -- Indexes for table `Payments`
 --
 ALTER TABLE `Payments`
   ADD PRIMARY KEY (`payment_id`),
-  ADD KEY `student_id` (`student_id`);
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `class_id` (`class_id`);
 
 --
 -- Indexes for table `Staff`
 --
 ALTER TABLE `Staff`
   ADD PRIMARY KEY (`staff_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `user_id` (`user_id`) USING BTREE;
 
 --
 -- Indexes for table `Students`
 --
 ALTER TABLE `Students`
   ADD PRIMARY KEY (`student_id`),
-  ADD KEY `parent_id` (`parent_id`),
-  ADD KEY `class_id` (`class_id`);
+  ADD KEY `class_id` (`class_id`),
+  ADD KEY `parent_id` (`parent_id`);
 
 --
 -- Indexes for table `Teachers`
@@ -365,7 +372,7 @@ ALTER TABLE `Teachers`
 -- Indexes for table `Users`
 --
 ALTER TABLE `Users`
-  ADD PRIMARY KEY (`user_id`),
+  ADD PRIMARY KEY (`user_id`) USING BTREE,
   ADD UNIQUE KEY `email` (`email`);
 
 --
@@ -376,7 +383,7 @@ ALTER TABLE `Users`
 -- AUTO_INCREMENT for table `Admins`
 --
 ALTER TABLE `Admins`
-  MODIFY `admin_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `admin_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `Attendance`
@@ -388,7 +395,7 @@ ALTER TABLE `Attendance`
 -- AUTO_INCREMENT for table `Classes`
 --
 ALTER TABLE `Classes`
-  MODIFY `class_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `class_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `Events`
@@ -412,37 +419,37 @@ ALTER TABLE `Messages`
 -- AUTO_INCREMENT for table `Parents`
 --
 ALTER TABLE `Parents`
-  MODIFY `parent_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `parent_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `Payments`
 --
 ALTER TABLE `Payments`
-  MODIFY `payment_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `payment_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `Staff`
 --
 ALTER TABLE `Staff`
-  MODIFY `staff_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `staff_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `Students`
 --
 ALTER TABLE `Students`
-  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `Teachers`
 --
 ALTER TABLE `Teachers`
-  MODIFY `teacher_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `teacher_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `Users`
 --
 ALTER TABLE `Users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
@@ -454,12 +461,6 @@ ALTER TABLE `Users`
 ALTER TABLE `Attendance`
   ADD CONSTRAINT `Attendance_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `Students` (`student_id`),
   ADD CONSTRAINT `Attendance_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `Classes` (`class_id`);
-
---
--- Constraints for table `Classes`
---
-ALTER TABLE `Classes`
-  ADD CONSTRAINT `Classes_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `Teachers` (`teacher_id`);
 
 --
 -- Constraints for table `Gallery`
@@ -474,23 +475,10 @@ ALTER TABLE `Parents`
   ADD CONSTRAINT `Parents_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
 
 --
--- Constraints for table `Payments`
---
-ALTER TABLE `Payments`
-  ADD CONSTRAINT `Payments_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `Students` (`student_id`);
-
---
 -- Constraints for table `Staff`
 --
 ALTER TABLE `Staff`
   ADD CONSTRAINT `Staff_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
---
--- Constraints for table `Students`
---
-ALTER TABLE `Students`
-  ADD CONSTRAINT `Students_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `Parents` (`parent_id`),
-  ADD CONSTRAINT `Students_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `Classes` (`class_id`);
 
 --
 -- Constraints for table `Teachers`
