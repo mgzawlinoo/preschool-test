@@ -5,25 +5,33 @@
                 <input type="text" class="form-control" placeholder="Search students...">
             </div> -->
             <div class="col-md-2">
-            <select class="form-select" name="class_id" required>
-                <option value="">Select Class</option>
-                <?php 
-                    $get_class_list_query = "SELECT * FROM Classes";
-                    $statement = $pdo->prepare($get_class_list_query);
-                    $statement->execute();
-                    $classes = [];
-                    // fetch teacher with while loop
-                    while($class = $statement->fetch(PDO::FETCH_ASSOC)) {
-                        $classes[] = $class;
-                    }
-                ?>
-                <?php if(count($classes) > 0) : ?>
-                    <!-- Show Teacher List with foreach loop -->
-                    <?php foreach($classes as $class) : ?>
-                        <option value="<?= $class['class_id']; ?>"><?= $class['class_name']; ?></option>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </select>
+
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-filter"></i> Select Class
+                    </button>
+                    <ul class="dropdown-menu">
+
+                    <?php 
+                        $get_class_list_query = "SELECT * FROM Classes";
+                        $statement = $pdo->prepare($get_class_list_query);
+                        $statement->execute();
+                        $classes = [];
+                        // fetch class with while loop
+                        while($class = $statement->fetch(PDO::FETCH_ASSOC)) {
+                            $classes[] = $class;
+                        }
+                    ?>
+                    <?php if(isset($classes) && count($classes) > 0) : ?>
+                        <!-- Show Class List with foreach loop -->
+                        <li><a class="dropdown-item text-primary" href="students.php?class_id=">All Classes</a></li>
+                        <?php foreach($classes as $class) : ?>
+                            <li><a class="dropdown-item text-primary" href="students.php?class_id=<?= $class['class_id'] ?>"><?= $class['class_name'] ?></a></li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+
+                    </ul>
+                </div>
 
             </div>
             <!-- <div class="col-md-2">

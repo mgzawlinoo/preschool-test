@@ -43,35 +43,45 @@ if( isset($_POST['login']) && $_SERVER['REQUEST_METHOD'] == 'POST' ) {
             $statement->bindParam(':email', $email, PDO::PARAM_STR);
             $statement->execute();
             if($statement->rowCount() <= 0) {
-                $errors['email'] = 'Invalid Email';
+                $errors['email'] = 'Email not found';
             }
             else {
                 // user ကို တွေ့ပြီ ဆိုရင် fetch တကြောင်းဆွဲယူမယ်
                 $user = $statement->fetch(PDO::FETCH_ASSOC);
                 // ဆွဲယူပြီး ရလာတာကို မှ email နဲ့ password ကို တိုက်စစ်မယ်
                 if($user['email'] === $email && password_verify($password, $user['password'])) {
-                    try {
-                        $get_parent_query = "SELECT * FROM Parents WHERE user_id = :user_id";
-                        $statement = $pdo->prepare($get_parent_query);
-                        $statement->bindParam(":user_id", $user['user_id'], PDO::PARAM_INT);
-                        $statement->execute();
-                        $parent = $statement->fetch(PDO::FETCH_ASSOC);
 
-                        unset($_SESSION['user']);
-                        $_SESSION['user']['user_id'] = $user['user_id'];
-                        $_SESSION['user']['parent_id'] = $parent['parent_id'];
-                        $_SESSION['user']['name'] = $parent['name'];
-                        $_SESSION['user']['photo'] = $parent['photo'] ? './backend/uploads/' . $parent['photo'] : '';
-                        $_SESSION['user']['role'] = $user['role'];
-                        $_SESSION['user']['email'] = $user['email'];
-                        $_SESSION['user']['phone'] = $parent['phone'];
-                        $_SESSION['user']['address'] = $parent['address'];
-                        header('Location: profile.php');
-                        exit;
+                    // email နဲ့ password မှန်သွားပြီ ဆိုမှ role က parent ဟုတ်မဟုတ် စစ်မယ် , active ဖြစ်မဖြစ် စစ်မယ်
+                    if ($user['role'] != 'Parent') {
+                        $errors['role'] = 'Invalid Role, Currently Parent role can login!';
                     }
-                    catch(PDOException $e) {
-                        $errors['dberror'] = $e->getMessage();
+                    elseif ($user['status'] != 'active') {
+                        $errors['status'] = 'Your account is not active yet!';
                     }
+                    else {
+                        try {
+                            $get_parent_query = "SELECT * FROM Parents WHERE user_id = :user_id";
+                            $statement = $pdo->prepare($get_parent_query);
+                            $statement->bindParam(":user_id", $user['user_id'], PDO::PARAM_INT);
+                            $statement->execute();
+                            $parent = $statement->fetch(PDO::FETCH_ASSOC);
+    
+                            unset($_SESSION['user']);
+                            $_SESSION['user']['user_id'] = $user['user_id'];
+                            $_SESSION['user']['parent_id'] = $parent['parent_id'];
+                            $_SESSION['user']['name'] = $parent['name'];
+                            $_SESSION['user']['photo'] = $parent['photo'] ? './backend/uploads/' . $parent['photo'] : '';
+                            $_SESSION['user']['role'] = $user['role'];
+                            $_SESSION['user']['email'] = $user['email'];
+                            $_SESSION['user']['phone'] = $parent['phone'];
+                            $_SESSION['user']['address'] = $parent['address'];
+                            header('Location: profile.php');
+                            exit;
+                        }
+                        catch(PDOException $e) {
+                            $errors['dberror'] = $e->getMessage();
+                        }
+                    }  
                 }
                 else {
                     $errors['password'] = 'Invalid Email or Password';

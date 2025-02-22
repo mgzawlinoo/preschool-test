@@ -1,19 +1,4 @@
-<?php 
 
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    $limit = 5;
-    $offset = ($page-1) * $limit;
-    $get_student_list_query = "SELECT *, Students.photo AS student_photo, Students.status AS student_status, Students.name AS student_name, Parents.name AS parent_name, Classes.class_name AS class_name FROM Students LEFT JOIN Payments ON Students.student_id = Payments.student_id LEFT JOIN Parents ON Students.parent_id = Parents.parent_id LEFT JOIN Classes ON Students.class_id = Classes.class_id ORDER BY Students.student_id DESC LIMIT $limit OFFSET $offset";
-    $statement = $pdo->prepare($get_student_list_query);
-    $statement->execute();
-    $students = [];
-
-    // fetch teacher with while loop
-    while($student = $statement->fetch(PDO::FETCH_ASSOC)) {
-        $students[] = $student;
-    }
-
-?>
 
 <div class="card">
     <div class="card-body">
@@ -63,6 +48,8 @@
                                             <span class="text-success">Paid</span>
                                         <?php elseif($student['payment_status'] == 'unpaid') : ?>
                                             <span class="text-danger">Unpaid</span>
+                                        <?php elseif($student['payment_status'] == 'decline') : ?>
+                                            <span class="text-danger">Decline</span>
                                         <?php else : ?>
                                             <span class="text-warning">Checking</span>
                                         <?php endif; ?>
@@ -81,10 +68,130 @@
                                             </ul>
                                         </div>
 
-                                        <?php if( $student['student_status'] == 'active' &&  $student['payment_status'] == 'checking' ) : ?>
-                                            <a href="student-payment.php?id=<?= $student['student_id'] ?>&payment_id=<?= $student['payment_id'] ?>" class="btn btn-success"><i class="bi bi-cash"></i> Check Payment</a>
+                                        <?php if( $student['payment_status'] == 'checking' ) : ?>
+                                            <!-- Check payment modal -->
+                                            <div class="d-inline">
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#checkPaymentModal<?= $student['payment_id'] ?>">
+                                                <i class="bi bi-cash"></i> Check Payment
+                                                </button>
+                                                <div class="modal fade" id="checkPaymentModal<?= $student['payment_id'] ?>" tabindex="-1" aria-labelledby="checkPaymentModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="checkPaymentModalLabel">Payment Detail</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-12 text-start align-self-center">
+                                                                        <form action="students.php" method="post" >
+                                                                            <input type="hidden" name="payment_id" value="<?= $student['payment_id'] ?>">
+                                                                            <input type="hidden" name="student_id" value="<?= $student['student_id'] ?>">
+                                                                            <input type="hidden" name="class_id" value="<?= $student['class_id'] ?>">
+                                                                            <input type="hidden" name="student_name" value="<?= $student['student_name'] ?>">
+
+                                                                            <ul class="list-group">
+                                                                                <li class="list-group-item text-muted">Name : <?= $student['student_name'] ?></li>
+                                                                                <li class="list-group-item text-muted">Class : <?= $student['class_name'] ?></li>
+                                                                                <li class="list-group-item text-muted">Amount : <?= $student['fees'] ?></li>
+                                                                                <li class="list-group-item text-muted">Payment Method : <?= $student['payment_method'] ?></li>
+                                                                            </ul>
+
+                                                                            <div class="my-4">
+                                                                                <lable for="photo">Payment Slip or Screenshot</lable>
+                                                                                <img class="img-fluid" src="<?= './uploads/'.$student['payment_photo'] ?>" alt="slip">
+                                                                            </div>
+
+                                                                            <div class="my-4">
+                                                                                <lable for="description">Description</lable>
+                                                                                <p><?= $student['description'] ?></p>
+                                                                            </div>
+
+                                                                            <div class="my-4">
+                                                                                <lable for="payment_status">Change Payment Status</lable>
+                                                                                <select name="payment_status" class="form-select">
+                                                                                    <option value="checking" selected>Checking</option>
+                                                                                    <option value="paid">Paid</option>
+                                                                                    <option value="unpaid">Unpaid</option>
+                                                                                    <option value="decline">Decline</option>
+                                                                                </select>
+                                                                            </div>
+
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="submit" name="update_online_payment" class="my-4 btn btn-primary">Submit</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Check payment modal -->
                                         <?php endif; ?>
 
+                                        <?php if(  $student['payment_status'] == 'unpaid' ) : ?>
+                                             <!-- Manually payment modal -->
+                                             <div class="d-inline">
+                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#manuallyPaymentModal<?= $student['payment_id'] ?>">
+                                                <i class="bi bi-cash"></i> Make Payment Manually
+                                                </button>
+                                                <div class="modal fade" id="manuallyPaymentModal<?= $student['payment_id'] ?>" tabindex="-1" aria-labelledby="manuallyPaymentModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="manuallyPaymentModalLabel">Payment Detail</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-12 text-start align-self-center">
+                                                                        <form action="students.php" method="post" >
+                                                                            <input type="hidden" name="payment_id" value="<?= $student['payment_id'] ?>">
+                                                                            <input type="hidden" name="student_id" value="<?= $student['student_id'] ?>">
+                                                                            <input type="hidden" name="class_id" value="<?= $student['class_id'] ?>">
+                                                                            <input type="hidden" name="student_name" value="<?= $student['student_name'] ?>">
+                                                                            <input type="hidden" name="payment_method" value="cash">
+
+                                                                            <ul class="list-group">
+                                                                                <li class="list-group-item text-muted">Name : <?= $student['student_name'] ?></li>
+                                                                                <li class="list-group-item text-muted">Class : <?= $student['class_name'] ?></li>
+                                                                                <li class="list-group-item text-muted">Amount : <?= $student['fees'] ?></li>
+                                                                                <li class="list-group-item text-muted">Payment Method : Cash</li>
+                                                                            </ul>
+
+                                                                            <div class="my-4">
+                                                                                <lable for="description">Description</lable>
+                                                                                <textarea name="description" class="form-control" rows="3"></textarea>
+                                                                            </div>
+
+                                                                            <div class="my-4">
+                                                                                <lable for="payment_status">Change Payment Status</lable>
+                                                                                <select name="payment_status" class="form-select">
+                                                                                    <option value="unpaid">Unpaid</option>
+                                                                                    <option value="paid">Paid</option>
+                                                                                    <option value="decline">Decline</option>
+                                                                                </select>
+                                                                            </div>
+
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                <button type="submit" name="update_manually_payment" class="my-4 btn btn-primary">Submit</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Manually payment modal -->
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
 
@@ -100,20 +207,37 @@
                             <ul class="pagination justify-content-center">
                                 <?php 
                                 $get_student_count_query = "SELECT COUNT(student_id) AS total_records FROM Students";
-                                $statement = $pdo->prepare($get_student_count_query);
-                                $statement->execute();
-                                $result = $statement->fetch(PDO::FETCH_ASSOC);
-
+                                if(isset($_GET['class_id']) && $_GET['class_id'] != '') {
+                                    $get_student_count_query = "SELECT COUNT(student_id) AS total_records FROM Students WHERE class_id = {$_GET['class_id']}";
+                                }
+                                try {
+                                    $statement = $pdo->prepare($get_student_count_query);
+                                    $statement->execute();
+                                    $result = $statement->fetch(PDO::FETCH_ASSOC);
+    
+                                } catch(PDOException $e) {
+                                    $errors['dberror'] = $e->getMessage();
+                                }
+                               
                                 $total_pages = ceil($result['total_records'] / $limit);
+
+                                if($total_pages <= 1) {
+                                    echo '<style>
+                                            .pagination {
+                                                display: none;
+                                            }
+                                        </style>';
+                                }
+                                
                                 for($i = 1; $i <= $total_pages; $i++) : ?>
 
                                     <?php if($i == $page) : ?>
-                                        <li class="page-item active"><a class="page-link" href="students.php?page=<?= $i ?>"><?= $i ?></a></li>
+                                        <li class="page-item active"><a class="page-link" href="students.php?class_id=<?= $_GET['class_id'] ?>&page=<?= $i ?>"><?= $i ?></a></li>
                                     <?php else : ?>
-                                        <li class="page-item"><a class="page-link" href="students.php?page=<?= $i ?>"><?= $i ?></a></li>
+                                        <li class="page-item"><a class="page-link" href="students.php?class_id=<?= $_GET['class_id'] ?>&page=<?= $i ?>"><?= $i ?></a></li>
                                     <?php endif; ?>
 
-                                <?php endfor; ?>
+                                <?php endfor; ?> 
                             </ul>
                             </nav>
                         </th>

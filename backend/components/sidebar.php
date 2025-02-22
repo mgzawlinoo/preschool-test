@@ -9,6 +9,7 @@
         ['name' => 'Classes', 'link'=> 'classes.php' , 'icon' => 'bi bi-calendar4-week'],
         ['name' => 'Admin', 'link'=> 'admins.php' , 'icon' => 'bi bi-person'],
         ['name' => 'User Management', 'link'=> 'users.php' , 'icon' => 'bi bi-wallet-fill'],
+        ['name' => 'Payments', 'link'=> 'payments.php' , 'icon' => 'bi bi-list-ol'],
         // ['name' => 'Payments', 'link'=> 'payments.php' , 'icon' => 'bi bi-cash'],
         // ['name' => 'Notifications', 'link'=> 'notifications.php' , 'icon' => 'bi bi-bell'],
         // ['name' => 'Settings', 'link'=> 'settings.php' , 'icon' => 'bi bi-gear'],

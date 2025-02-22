@@ -70,13 +70,15 @@ if( isset($_POST['register']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
         // Insert User Data into Database
         try {
             $role = 'Parent';
-            $insert_user_query = "INSERT INTO Users (email, password, role, created_at, updated_at) 
-            VALUES (:email, :password, :role, :created_at, :updated_at)";
+            $status = 'pending';
+            $insert_user_query = "INSERT INTO Users (email, password, role, status, created_at, updated_at) 
+            VALUES (:email, :password, :role, :status, :created_at, :updated_at)";
     
             $statement = $pdo->prepare($insert_user_query);
             $statement->bindParam(":email", $email, PDO::PARAM_STR);
             $statement->bindParam(":password", $hashed_password, PDO::PARAM_STR);
             $statement->bindParam(":role", $role, PDO::PARAM_STR);
+            $statement->bindParam(":status", $status, PDO::PARAM_STR);
             $statement->bindParam(":created_at", $now, PDO::PARAM_STR);
             $statement->bindParam(":updated_at", $now, PDO::PARAM_STR);
             $statement->execute();

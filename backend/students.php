@@ -4,6 +4,52 @@
 <?php 
 
     $errors = [];
+
+    // Get Student List
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : '';
+    $limit = 10;
+    $offset = ($page-1) * $limit;
+
+    if($class_id) {
+        $get_student_list_query = "SELECT *, 
+        Students.photo AS student_photo, 
+        Students.status AS student_status, 
+        Students.name AS student_name, 
+        Parents.name AS parent_name, 
+        Classes.class_name AS class_name, 
+        Payments.photo AS payment_photo 
+        FROM Students 
+        LEFT JOIN Payments ON Students.student_id = Payments.student_id 
+        LEFT JOIN Parents ON Students.parent_id = Parents.parent_id 
+        LEFT JOIN Classes ON Students.class_id = Classes.class_id 
+        WHERE Students.class_id = $class_id
+        ORDER BY Students.student_id DESC LIMIT $limit OFFSET $offset";
+    }
+    else {
+        $get_student_list_query = "SELECT *, 
+        Students.photo AS student_photo, 
+        Students.status AS student_status, 
+        Students.name AS student_name, 
+        Parents.name AS parent_name, 
+        Classes.class_name AS class_name, 
+        Payments.photo AS payment_photo 
+        FROM Students 
+        LEFT JOIN Payments ON Students.student_id = Payments.student_id 
+        LEFT JOIN Parents ON Students.parent_id = Parents.parent_id 
+        LEFT JOIN Classes ON Students.class_id = Classes.class_id 
+        ORDER BY Students.student_id DESC LIMIT $limit OFFSET $offset";
+    }
+    
+    $statement = $pdo->prepare($get_student_list_query);
+    $statement->execute();
+    $students = [];
+
+    // fetch teacher with while loop
+    while($student = $statement->fetch(PDO::FETCH_ASSOC)) {
+        $students[] = $student;
+    }
+    
     // Add Student
     if (isset($_POST['add_student']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -105,6 +151,126 @@
         
     }
 
+
+    // UPDATE Payment (Online)
+  if (isset($_POST['update_online_payment']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $payment_status = trim($_POST['payment_status']);
+    $student_id = trim($_POST['student_id']);
+    $student_name = trim($_POST['student_name']);
+    $payment_id = trim($_POST['payment_id']);
+    $class_id = trim($_POST['class_id']);
+
+    // filter inputs
+    $payment_status = htmlspecialchars($payment_status);
+    $student_id = FILTER_VAR($student_id, FILTER_SANITIZE_NUMBER_INT);
+    $payment_id = FILTER_VAR($payment_id, FILTER_SANITIZE_NUMBER_INT);
+    $class_id = FILTER_VAR($class_id, FILTER_SANITIZE_NUMBER_INT);
+    $student_name = htmlspecialchars($student_name);
+
+    if(empty($payment_status) || empty($student_id) || empty($payment_id) || empty($class_id)) {
+        $errors['name'] = 'All fields are required';
+    }
+
+    // check payment status from arry
+    if(!in_array($payment_status, ['paid', 'unpaid', 'checking', 'decline'])) {
+        $errors['payment_status'] = 'Invalid Payment Status';
+    }
+
+    if(count($errors) == 0) {
+        // check payment exist
+        try {
+            $check_payment_query = "SELECT * FROM Payments WHERE payment_id = :payment_id AND student_id = :student_id AND class_id = :class_id";
+            $statement = $pdo->prepare($check_payment_query);
+            $statement->bindParam(':payment_id', $payment_id, PDO::PARAM_INT);
+            $statement->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+            $statement->bindParam(':class_id', $class_id, PDO::PARAM_INT);
+            $statement->execute();
+            $payment = $statement->fetch(PDO::FETCH_ASSOC);
+
+            if($payment) {
+                // update payment status
+                try {
+                    $update_payment_query = "UPDATE Payments SET payment_status = :payment_status WHERE payment_id = :payment_id";
+                    $statement = $pdo->prepare($update_payment_query);
+                    $statement->bindParam(':payment_status', $payment_status, PDO::PARAM_STR);
+                    $statement->bindParam(':payment_id', $payment_id, PDO::PARAM_INT);
+                    $statement->execute();
+                    $_SESSION['success'] = $student_name."'s Payment status updated successfully";
+                    header('Location: students.php');
+                    exit();
+                } catch (Exception $e) {
+                    $errors['dberror'] = $e->getMessage();
+                }
+            }
+        } catch (Exception $e) {
+            $errors['dberror'] = $e->getMessage();
+        }
+    }
+
+  }
+
+    // UPDATE Payment (Manually)
+    if (isset($_POST['update_manually_payment']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $payment_status = trim($_POST['payment_status']);
+        $student_id = trim($_POST['student_id']);
+        $student_name = trim($_POST['student_name']);
+        $payment_id = trim($_POST['payment_id']);
+        $class_id = trim($_POST['class_id']);
+        $description = trim($_POST['description']);
+    
+        // filter inputs
+        $payment_status = htmlspecialchars($payment_status);
+        $student_id = FILTER_VAR($student_id, FILTER_SANITIZE_NUMBER_INT);
+        $payment_id = FILTER_VAR($payment_id, FILTER_SANITIZE_NUMBER_INT);
+        $class_id = FILTER_VAR($class_id, FILTER_SANITIZE_NUMBER_INT);
+        $student_name = htmlspecialchars($student_name);
+        $description = htmlspecialchars($description);
+    
+        if(empty($payment_status) || empty($student_id) || empty($payment_id) || empty($class_id) || empty($description)) {
+            $errors['name'] = 'All fields are required';
+        }
+    
+        // check payment status from arry
+        if(!in_array($payment_status, ['paid', 'unpaid', 'checking', 'decline'])) {
+            $errors['payment_status'] = 'Invalid Payment Status';
+        }
+    
+        if(count($errors) == 0) {
+            // check payment exist
+            try {
+                $check_payment_query = "SELECT * FROM Payments WHERE payment_id = :payment_id AND student_id = :student_id AND class_id = :class_id";
+                $statement = $pdo->prepare($check_payment_query);
+                $statement->bindParam(':payment_id', $payment_id, PDO::PARAM_INT);
+                $statement->bindParam(':student_id', $student_id, PDO::PARAM_INT);
+                $statement->bindParam(':class_id', $class_id, PDO::PARAM_INT);
+                $statement->execute();
+                $payment = $statement->fetch(PDO::FETCH_ASSOC);
+    
+                if($payment) {
+                    // update payment status
+                    $payment_method = 'cash';
+                    try {
+                        $update_payment_query = "UPDATE Payments SET payment_status = :payment_status, payment_method = :payment_method WHERE payment_id = :payment_id";
+                        $statement = $pdo->prepare($update_payment_query);
+                        $statement->bindParam(':payment_status', $payment_status, PDO::PARAM_STR);
+                        $statement->bindParam(':payment_method', $payment_method, PDO::PARAM_STR);
+                        $statement->bindParam(':payment_id', $payment_id, PDO::PARAM_INT);
+                        $statement->execute();
+                        $_SESSION['success'] = $student_name."'s Payment status updated successfully";
+                        header('Location: students.php');
+                        exit();
+                    } catch (Exception $e) {
+                        $errors['dberror'] = $e->getMessage();
+                    }
+                }
+            } catch (Exception $e) {
+                $errors['dberror'] = $e->getMessage();
+            }
+        }
+    
+      }
 ?>
 
     <div class="wrapper">

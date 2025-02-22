@@ -62,8 +62,13 @@
                                     <td><?= $student['parent_name'] ?></td>
                                     <td><?= $student['enrollment_date'] ?></td>
 
-                                    <td><?php if($student['payment_status'] == 'paid') : ?>
+                                    <td>
+                                    <?php if($student['payment_status'] == 'paid') : ?>
                                        <span class="badge bg-success">Paid</span>
+                                    <?php elseif($student['payment_status'] == 'checking') : ?>
+                                       <span class="badge bg-warning">Checking</span>
+                                    <?php elseif($student['payment_status'] == 'decline') : ?>
+                                        <span class="badge bg-danger">Decline</span>
                                     <?php else : ?>
                                         <span class="badge bg-danger">Unpaid</span>
                                     <?php endif; ?>

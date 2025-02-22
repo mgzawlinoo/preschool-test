@@ -2,7 +2,7 @@
 
 <?php 
 
-$get_teacher_list_query = "SELECT * FROM Teachers LEFT JOIN Users ON Teachers.user_id = Users.user_id WHERE Users.status = 1";
+$get_teacher_list_query = "SELECT * FROM Teachers LEFT JOIN Users ON Teachers.user_id = Users.user_id WHERE Users.status = 'active' OR Users.status = 'pending'";
 $statement = $pdo->prepare($get_teacher_list_query);
 $statement->execute();
 $teachers = [];

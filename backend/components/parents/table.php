@@ -2,7 +2,7 @@
 
     <?php 
 
-    $get_parent_list_query = "SELECT * FROM Parents LEFT JOIN Users ON Parents.user_id = Users.user_id WHERE Users.status = 'active'";
+    $get_parent_list_query = "SELECT * FROM Parents LEFT JOIN Users ON Parents.user_id = Users.user_id WHERE Users.status = 'active' OR Users.status = 'pending'";
     $statement = $pdo->prepare($get_parent_list_query);
     $statement->execute();
     $parents = [];
