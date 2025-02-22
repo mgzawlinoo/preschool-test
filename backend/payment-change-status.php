@@ -2,15 +2,15 @@
 include './auth-check.php';
 include '../database/db.php'; 
 
-if(isset($_GET['id']) && $_SERVER['REQUEST_METHOD'] === 'GET')  {
-    $payment_id = trim($_GET['payment_id']);
-    $payment_status = trim($_GET['payment_status']);
-    $from = trim($_GET['from'] ?? 'students.php');
+if(isset($_GET['id']) && isset($_GET['status']) && $_SERVER['REQUEST_METHOD'] === 'GET')  {
+    $payment_id = trim($_GET['id']);
+    $payment_status = trim($_GET['status']);
+    $from = trim($_GET['from'] ?? 'payments.php');
     $page = trim($_GET['page'] ?? '1');
 
  
     // check text from array list 
-    $payment_status_list = ['paid', 'checking', 'unpaid'];
+    $payment_status_list = ['paid', 'checking', 'unpaid', 'decline'];
     if(!in_array($payment_status, $payment_status_list)) {
         $_SESSION['error'] = 'Invalid status';
         header("Location: {$from}");
@@ -34,3 +34,5 @@ if(isset($_GET['id']) && $_SERVER['REQUEST_METHOD'] === 'GET')  {
         exit;
     }
 }
+header("Location: payments.php");
+exit;

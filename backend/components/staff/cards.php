@@ -53,7 +53,7 @@
                         
                         <div class="mt-3 d-flex justify-content-between align-items-center">
 
-                        <a class="btn btn-secondary text-white text-decoration-none" href="teachers-edit.php?id=<?= $teacher['teacher_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
+                        <a class="btn btn-secondary text-white text-decoration-none" href="staff-edit.php?id=<?= $staff['staff_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
 
                             <div class="text-center">
                                 <?php if($staff['status'] == 'active') : ?>

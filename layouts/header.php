@@ -29,6 +29,29 @@
 
     <!-- Template Stylesheet -->
     <link href="./css/style.css" rel="stylesheet">
+
+    <style>
+    .banner-small::before {
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 10px;
+        left: 0;
+        background: url(../img/bg-header-top.png) center center repeat-x;
+        z-index: 1;
+    }
+    .banner-small::after {
+        position: absolute;
+        content: "";
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        z-index: 1;
+        height: 19px;
+        background: url(../img/bg-header-bottom.png) center center repeat-x;
+    }
+
+    </style>
 </head>
 
 <body>

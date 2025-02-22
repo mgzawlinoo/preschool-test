@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 21, 2025 at 12:35 PM
+-- Generation Time: Feb 22, 2025 at 02:54 PM
 -- Server version: 8.0.41-0ubuntu0.22.04.1
 -- PHP Version: 8.2.27
 
@@ -164,9 +164,9 @@ CREATE TABLE `Payments` (
   `payment_date` timestamp NULL DEFAULT NULL,
   `amount` int DEFAULT NULL,
   `payment_method` enum('cash','kpay','bank transfer') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `payment_status` enum('unpaid','paid','checking') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unpaid',
+  `payment_status` enum('unpaid','paid','checking','decline') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unpaid',
   `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -174,10 +174,12 @@ CREATE TABLE `Payments` (
 --
 
 INSERT INTO `Payments` (`payment_id`, `student_id`, `class_id`, `payment_date`, `amount`, `payment_method`, `payment_status`, `photo`, `description`) VALUES
-(1, 16, 1, NULL, NULL, NULL, 'unpaid', NULL, NULL),
-(2, 17, 1, NULL, NULL, NULL, 'unpaid', NULL, NULL),
-(3, 18, 1, NULL, NULL, NULL, 'unpaid', NULL, NULL),
-(4, 19, 2, NULL, NULL, NULL, 'unpaid', NULL, NULL);
+(1, 16, 1, '2025-02-22 07:07:32', 2000000, 'cash', 'paid', 'p_1.jpg', 'cash'),
+(2, 17, 1, '2025-02-22 00:31:02', 2000000, 'cash', 'paid', 'p_2.jpg', 'czf'),
+(3, 18, 1, '2025-02-22 01:01:16', 2000000, 'kpay', 'paid', 'p_3.jpg', 'dfsaf'),
+(4, 19, 2, '2025-02-22 01:01:05', 3000000, 'cash', 'paid', 'p_4.jpg', 'sfsaf'),
+(9, 24, 2, '2025-02-22 07:05:52', 3000000, 'kpay', 'paid', 'p_9.jpg', 'ok par'),
+(10, 25, 2, '2025-02-22 08:16:40', 3000000, 'cash', 'paid', NULL, 'well note');
 
 -- --------------------------------------------------------
 
@@ -227,10 +229,12 @@ CREATE TABLE `Students` (
 --
 
 INSERT INTO `Students` (`student_id`, `parent_id`, `class_id`, `name`, `photo`, `date_of_birth`, `gender`, `enrollment_date`, `status`) VALUES
-(16, 3, 1, 'Soe Moe', 's_16.png', '2021-12-25', 'male', '2025-02-21', 'pending'),
-(17, 3, 1, 'Thuzar', 's_17.png', '2022-02-10', 'female', '2025-02-21', 'pending'),
-(18, 3, 1, 'Tun Tun', 's_18.png', '2022-01-04', 'male', '2025-02-21', 'pending'),
-(19, 4, 2, 'Su Su', 's_19.png', '2021-02-21', 'female', '2025-02-21', 'active');
+(16, 3, 1, 'Soe Moe', 's_16.png', '2021-12-25', 'male', '2025-02-21', 'active'),
+(17, 3, 1, 'Thuzar', 's_17.png', '2022-02-10', 'female', '2025-02-21', 'active'),
+(18, 4, 1, 'Tun Tun', 's_18.png', '2022-01-04', 'male', '2025-02-21', 'active'),
+(19, 4, 2, 'Su Su', 's_19.png', '2021-02-21', 'female', '2025-02-21', 'active'),
+(24, 4, 2, 'Ariel Marks', '4043238_avatar_boy_kid_person_icon.png', '2020-11-09', 'male', '2025-02-22', 'active'),
+(25, 3, 2, 'Thidar', '4043252_child_girl_kid_person_icon.png', '2020-10-26', 'female', '2025-02-22', 'active');
 
 -- --------------------------------------------------------
 
@@ -425,7 +429,7 @@ ALTER TABLE `Parents`
 -- AUTO_INCREMENT for table `Payments`
 --
 ALTER TABLE `Payments`
-  MODIFY `payment_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `payment_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `Staff`
@@ -437,7 +441,7 @@ ALTER TABLE `Staff`
 -- AUTO_INCREMENT for table `Students`
 --
 ALTER TABLE `Students`
-  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `student_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `Teachers`

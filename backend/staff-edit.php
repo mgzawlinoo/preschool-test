@@ -7,7 +7,7 @@
         $staff_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
         $staff_id = trim($staff_id);
 
-        $get_staff_query = "SELECT * FROM Staff LEFT JOIN Users ON Staff.user_id = Users.user_id WHERE staff_id = :staff_id";
+        $get_staff_query = "SELECT *, Staff.staff_role AS staff_role FROM Staff LEFT JOIN Users ON Staff.user_id = Users.user_id WHERE staff_id = :staff_id";
         $statement = $pdo->prepare($get_staff_query);
         $statement->bindParam(":staff_id", $staff_id, PDO::PARAM_INT);
         $statement->execute();
@@ -16,7 +16,7 @@
 ?>
 
 <?php 
-        // UPDATE TEACHER
+        // UPDATE Staff
         if (isset($_POST['update_staff']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $error = [];
@@ -177,7 +177,7 @@
                                             <option value="">Select Staff Role</option>
                                             <?php
                                                 // staff role array 
-                                                $staff_roles = ['Admin', 'Assistant', 'Other'];
+                                                $staff_roles = ['HR', 'Accountant', 'Driver', 'Cleaner'];
                                             ?>
                                             <!-- Show Teacher List with foreach loop -->
                                             <?php foreach($staff_roles as $staff_role) : ?>

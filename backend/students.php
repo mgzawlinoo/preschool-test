@@ -23,7 +23,7 @@
         LEFT JOIN Payments ON Students.student_id = Payments.student_id 
         LEFT JOIN Parents ON Students.parent_id = Parents.parent_id 
         LEFT JOIN Classes ON Students.class_id = Classes.class_id 
-        WHERE Students.class_id = $class_id
+        WHERE Students.class_id = $class_id AND Students.status != 'suspend'
         ORDER BY Students.student_id DESC LIMIT $limit OFFSET $offset";
     }
     else {
@@ -38,6 +38,7 @@
         LEFT JOIN Payments ON Students.student_id = Payments.student_id 
         LEFT JOIN Parents ON Students.parent_id = Parents.parent_id 
         LEFT JOIN Classes ON Students.class_id = Classes.class_id 
+        WHERE Students.status != 'suspend'
         ORDER BY Students.student_id DESC LIMIT $limit OFFSET $offset";
     }
     
@@ -130,7 +131,6 @@
 
                 $student_id = $pdo->lastInsertId();
 
-                $photoname = 's_'.$student_id . '.' . $photoextension;
                 $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
                 if(!$upload_result) {
                     $errors['photo'] = "Failed to upload file";
@@ -143,6 +143,8 @@
                 $statement->execute();
 
                 $_SESSION['success'] = 'Student added successfully';
+                header("Location: students.php");
+                exit();
             }
             catch (PDOException $e) {
                 $errors['dberror'] = $e->getMessage();
@@ -151,9 +153,8 @@
         
     }
 
-
-    // UPDATE Payment (Online)
-  if (isset($_POST['update_online_payment']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    // UPDATE Online Payment
+    if (isset($_POST['update_online_payment']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $payment_status = trim($_POST['payment_status']);
     $student_id = trim($_POST['student_id']);
@@ -208,10 +209,14 @@
         }
     }
 
-  }
+    }
 
-    // UPDATE Payment (Manually)
+    // UPDATE Manual Payment
     if (isset($_POST['update_manually_payment']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+
+
+        $now = new DateTime();
+        $now = $now->format('Y-m-d H:i:s');
 
         $payment_status = trim($_POST['payment_status']);
         $student_id = trim($_POST['student_id']);
@@ -219,7 +224,10 @@
         $payment_id = trim($_POST['payment_id']);
         $class_id = trim($_POST['class_id']);
         $description = trim($_POST['description']);
-    
+        $payment_method = trim($_POST['payment_method']);
+        $fees = trim($_POST['fees']);
+        $payment_date = $now;
+
         // filter inputs
         $payment_status = htmlspecialchars($payment_status);
         $student_id = FILTER_VAR($student_id, FILTER_SANITIZE_NUMBER_INT);
@@ -227,11 +235,19 @@
         $class_id = FILTER_VAR($class_id, FILTER_SANITIZE_NUMBER_INT);
         $student_name = htmlspecialchars($student_name);
         $description = htmlspecialchars($description);
-    
-        if(empty($payment_status) || empty($student_id) || empty($payment_id) || empty($class_id) || empty($description)) {
+        $payment_method = htmlspecialchars($payment_method);
+        $fees = FILTER_VAR($fees, FILTER_SANITIZE_NUMBER_INT);
+        $payment_date = htmlspecialchars($payment_date);
+
+        if(empty($payment_status) || empty($student_id) || empty($payment_id) || empty($class_id) || empty($description) || empty($payment_method) || empty($fees) || empty($payment_date)) {
             $errors['name'] = 'All fields are required';
         }
-    
+
+        // check payment method 
+        if(!in_array($payment_method, ['cash', 'kpay', 'bank transfer'])) {
+            $errors['payment_method'] = 'Invalid Payment Method';
+        }
+
         // check payment status from arry
         if(!in_array($payment_status, ['paid', 'unpaid', 'checking', 'decline'])) {
             $errors['payment_status'] = 'Invalid Payment Status';
@@ -250,13 +266,15 @@
     
                 if($payment) {
                     // update payment status
-                    $payment_method = 'cash';
                     try {
-                        $update_payment_query = "UPDATE Payments SET payment_status = :payment_status, payment_method = :payment_method WHERE payment_id = :payment_id";
+                        $update_payment_query = "UPDATE Payments SET payment_status = :payment_status, payment_method = :payment_method, description = :description, amount = :fees, payment_date = :payment_date WHERE payment_id = :payment_id";
                         $statement = $pdo->prepare($update_payment_query);
                         $statement->bindParam(':payment_status', $payment_status, PDO::PARAM_STR);
                         $statement->bindParam(':payment_method', $payment_method, PDO::PARAM_STR);
+                        $statement->bindParam(':description', $description, PDO::PARAM_STR);
                         $statement->bindParam(':payment_id', $payment_id, PDO::PARAM_INT);
+                        $statement->bindParam(':fees', $fees, PDO::PARAM_INT);
+                        $statement->bindParam(':payment_date', $payment_date, PDO::PARAM_STR);
                         $statement->execute();
                         $_SESSION['success'] = $student_name."'s Payment status updated successfully";
                         header('Location: students.php');
@@ -270,7 +288,8 @@
             }
         }
     
-      }
+    }
+
 ?>
 
     <div class="wrapper">
@@ -430,7 +449,9 @@
 
     <script>
         const chooseFile = document.getElementById("photo");
+        const chooseFileSlip = document.getElementById("slip");
         const imgPreview = document.getElementById("preview-image");
+        const imgPreviewSlip = document.getElementById("slip-preview");
 
         chooseFile.addEventListener("change", function () {
             getImgData();
@@ -444,6 +465,22 @@
                 fileReader.addEventListener("load", function () {
                 imgPreview.style.display = "block";
                 imgPreview.innerHTML = '<img class="rounded-circle" style="max-width: 150px; height: auto" alt="Teacher" src="' + this.result + '" />';
+                });    
+            }
+        }
+
+        chooseFileSlip.addEventListener("change", function () {
+            getImgSlipData();
+        });
+
+        function getImgSlipData() {
+            const files = chooseFileSlip.files[0];
+            if (files) {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(files);
+                fileReader.addEventListener("load", function () {
+                imgPreviewSlip.style.display = "block";
+                imgPreviewSlip.innerHTML = '<img class="img-fluid rounded my-4 d-block" style="max-width: 100%;" alt="Slip" src="' + this.result + '" />';
                 });    
             }
         }

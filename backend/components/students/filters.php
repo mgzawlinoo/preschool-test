@@ -4,10 +4,11 @@
             <!-- <div class="col-md-3">
                 <input type="text" class="form-control" placeholder="Search students...">
             </div> -->
-            <div class="col-md-2">
+            <div class="col-md-12">
 
-                <div class="dropdown d-inline-block">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <!-- Select Class -->
+                <div class="dropdown d-inline">
+                   Filter :  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-filter"></i> Select Class
                     </button>
                     <ul class="dropdown-menu">
@@ -32,6 +33,8 @@
 
                     </ul>
                 </div>
+
+            
 
             </div>
             <!-- <div class="col-md-2">
