@@ -2,17 +2,22 @@
 <?php include './layouts/header.php'; ?>
 
 <?php 
+    $errors = [];
     // ှShow Parent Data from Get ID and Fill it to form
     if(isset($_GET['id']) && isset($_GET['name'])) {
         $user_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
         $user_id = trim($user_id);
         $name = trim(htmlspecialchars($_GET['name']));
 
-        $get_user_query = "SELECT user_id FROM Users WHERE user_id = :user_id";
-        $statement = $pdo->prepare($get_user_query);
-        $statement->bindParam(":user_id", $user_id, PDO::PARAM_INT);
-        $statement->execute();
-        $user = $statement->fetch(PDO::FETCH_ASSOC);
+        try {
+            $get_user_query = "SELECT user_id FROM Users WHERE user_id = :user_id";
+            $statement = $pdo->prepare($get_user_query);
+            $statement->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+            $statement->execute();
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            $errors['db_error'] = $e->getMessage();
+        }
     }
 ?>
 
@@ -20,7 +25,7 @@
   // UPDATE STUDENT
   if (isset($_POST['update_password']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $error = [];
+    $errors = [];
     
     // trim inputs value
     $user_id = trim($_POST['user-id']);
@@ -34,21 +39,21 @@
 
     // check empty fields
     if (empty($user_id) || empty($password) || empty($confirm_password)) {
-        $error['empty'] = 'All fields are required';
+        $errors['empty'] = 'All fields are required';
     }
 
     // Check password match
     if(strcmp($password, $confirm_password) !== 0) {
-        $error['password'] = 'Password does not match';
+        $errors['password'] = 'Password does not match';
     }
 
     // check password length
     if(strlen($password) < 8) {
-        $error['password'] = 'Password must be at least 8 characters';
+        $errors['password'] = 'Password must be at least 8 characters';
     }
 
     // update query for student
-    if(count($error) == 0) {
+    if(count($errors) == 0) {
 
         // Hash Password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -66,7 +71,7 @@
 
         }
         catch (PDOException $e) {
-            echo $e->getMessage();
+            $errors['db_error'] = $e->getMessage();
         }
     }
 }
@@ -83,37 +88,37 @@
 
             <!-- Main Content -->
             <div class="container-fluid p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Reset Password</h2>
+                <div class="bg-warning text-black p-4 rounded   d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-key"></i> Reset Password</h2>
                 </div>
 
-                <?php if(isset($error) && count($error) > 0) : ?>
+                <?php if(isset($errors) && count($errors) > 0) : ?>
                     <div class="alert alert-danger">
-                        <?php foreach($error as $e) : ?>
-                            <li><?php echo $e; ?></li>
+                        <?php foreach($errors as $error) : ?>
+                            <li><?php echo $error; ?></li>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
 
                 <form action="reset-password.php?id=<?= $user['user_id']; ?>&name=<?= $name; ?>" method="POST">
-                        <input type="hidden" name="user-id" value="<?= $user['user_id']; ?>">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" value="<?= $name ?? '' ?>" disabled>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" class="form-control" name="password" >
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" name="confirm-password" >
-                        </div>
-                        <div class="mb-3">
-                            <a href="parents.php" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" name="update_password" class="btn btn-primary">Reset Password</button>
-                        </div>
-                    </form>
+                    <input type="hidden" name="user-id" value="<?= $user['user_id']; ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" value="<?= $name ?? '' ?>" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" >
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" name="confirm-password" >
+                    </div>
+                    <div class="mb-3">
+                        <a href="users.php" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" name="update_password" class="btn btn-primary">Reset Password</button>
+                    </div>
+                </form>
 
             </div>
         </div>

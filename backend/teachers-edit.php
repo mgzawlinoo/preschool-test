@@ -140,8 +140,8 @@
       
             <!-- Main Content -->
             <div class="container-fluid p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Update Teacher</h2>
+                <div class="bg-warning text-black p-4 rounded  d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Update Teacher</h2>
                 </div>
 
                 <?php if(isset($errors) && count($errors) > 0) : ?>

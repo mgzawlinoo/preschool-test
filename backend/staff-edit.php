@@ -19,7 +19,7 @@
         // UPDATE Staff
         if (isset($_POST['update_staff']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $error = [];
+            $errors = [];
             
             // trim inputs value
             $user_id = trim($_POST['user-id']);
@@ -45,7 +45,7 @@
 
             // check empty fields
             if (empty($name) || empty($phone) || empty($staff_role) || empty($hire_date) || empty($salary) || empty($address)) {
-                $error['empty'] = 'All fields are required';
+                $errors['empty'] = 'All fields are required';
             }
 
             // update query for teachers
@@ -60,7 +60,7 @@
 
                 $phototype = $_FILES['photo']['type'];
                 if($phototype != 'image/jpeg' && $phototype != 'image/png' && $phototype != 'image/jpg') {
-                    $error['photo'] = 'Invalid file type';
+                    $errors['photo'] = 'Invalid file type';
                 }
     
                 $phototmpname = $_FILES['photo']['tmp_name'];  
@@ -68,13 +68,13 @@
                 // validate file size
                 $phototmpsize = $_FILES['photo']['size'];
                 if($phototmpsize > 5000000) {
-                    $error['photo'] = 'File size not more than 5MB';
+                    $errors['photo'] = 'File size not more than 5MB';
                 }
 
                 // if the file is not an image, throw an error
                 $check = getimagesize($phototmpname);
                 if($check === false) {
-                    $error['photo'] = "File is not an image";
+                    $errors['photo'] = "File is not an image";
                 }
 
                 // move the file to the uploads directory
@@ -85,20 +85,20 @@
 
                 // check directory write permissions
                 if(!is_writable('uploads')) {
-                    $error['photo'] = "Uploads directory is not writable";
+                    $errors['photo'] = "Uploads directory is not writable";
                 }
 
                 $photoname = $user_id . '.' . $photoextension;
                 $upload_result = move_uploaded_file($phototmpname, 'uploads/' . $photoname);
                 if(!$upload_result) {
-                    $error['photo'] = "Failed to upload file";
+                    $errors['photo'] = "Failed to upload file";
                 }
             }
             else {
                 $photoname = $staff['photo'];
             }
 
-            if(count($error) == 0) {
+            if(count($errors) == 0) {
                 try {
                     $update_staff_query = "UPDATE Staff SET name=:name, staff_role=:staff_role, phone=:phone, photo=:photo, hire_date=:hire_date, salary=:salary, address=:address WHERE staff_id=:staff_id"; //error
                     $statement = $pdo->prepare($update_staff_query);
@@ -118,7 +118,7 @@
     
                 }
                 catch (PDOException $e) {
-                    echo $e->getMessage();
+                    $errors['dberror'] = $e->getMessage();
                 }
             }
         }
@@ -135,14 +135,14 @@
       
             <!-- Main Content -->
             <div class="container-fluid p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Update Staff</h2>
+            <div class="bg-warning text-black p-4 rounded  d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Update Staff</h2>
                 </div>
 
-                <?php if(isset($error) && count($error) > 0) : ?>
+                <?php if(isset($errors) && count($errors) > 0) : ?>
                     <div class="alert alert-danger">
-                        <?php foreach($error as $e) : ?>
-                            <li><?php echo $e; ?></li>
+                        <?php foreach($errors as $error) : ?>
+                            <li><?= $error; ?></li>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>

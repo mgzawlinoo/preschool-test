@@ -304,7 +304,7 @@
             <!-- Main Content -->
             <div class="container-fluid p-4">
                 <div class="bg-warning text-black p-4 rounded d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0"><i class="bi bi-person-circle"></i> Student Management</h2>
+                    <h2 class="mb-0"><i class="bi bi-person-bounding-box"></i> Student Management</h2>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
                         <i class="bi bi-person-plus"></i> Add New Student
                     </button>

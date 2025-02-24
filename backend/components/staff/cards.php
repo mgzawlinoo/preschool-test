@@ -18,7 +18,7 @@
 
         <!-- Show Teacher List with foreach loop -->
         <?php foreach($staffs as $staff) : ?>
-            <div class="col-md-4 mb-4">
+            <div class="col-lg-4 mb-4">
                 <div class="card">
                     <div class="card-body">
                         <div class="text-center mb-3">
@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="border-top pt-3">
+                        <div class="border-bottom pb-3">
                             <div class="row text-center">
                                 <div class="col">
                                     <b><i class="bi bi-envelope me-2"></i>Email</b>
@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         
-                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                        <div class="mt-3 d-flex justify-content-between align-items-end">
 
                         <a class="btn btn-secondary text-white text-decoration-none" href="staff-edit.php?id=<?= $staff['staff_id'] ?>"><i class="bi bi-pencil text-white"></i>  Edit</a>
 
@@ -66,7 +66,7 @@
 
                                 <div class="dropdown d-block">
                                     <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Change Status
+                                        <i class="bi bi-gear"></i> Status
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $staff['user_id'] ?>&status=active&from=staff.php">Active</a></li>
@@ -77,6 +77,7 @@
                         </div>
                     </div>
                 </div>
+                                </div>                   
             </div>
         <?php endforeach; ?>
 

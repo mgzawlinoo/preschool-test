@@ -110,7 +110,7 @@ if( isset($_POST['login']) && $_SERVER['REQUEST_METHOD'] == 'POST' ) {
             <?php endif; ?>
 
           <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px">
-              <h1 class="mb-3">Login Form</h1>
+              <h1 class="mb-3">Parent Login Form</h1>
           </div>
           <div class="row g-4">
               <div class="col-12 wow fadeInUp" data-wow-delay="0.1s">

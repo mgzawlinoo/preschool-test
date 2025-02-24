@@ -216,7 +216,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="8">
+                        <th colspan="10">
                             <!-- pagination -->
 
                             <nav class="mt-3">

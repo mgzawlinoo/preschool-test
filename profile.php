@@ -24,6 +24,72 @@
         $errors['dberror'] = $e->getMessage();
     }
 
+    // Profile Photo Update
+    if(isset($_POST['profile-submit']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        // check if file is uploaded
+        if($_FILES['profile-photo']['error'] == 0 && !empty($_FILES['profile-photo']['name'])) {
+
+            $photoname = $_FILES['profile-photo']['name'];  
+
+            // get file extension
+            $photoextension = pathinfo($photoname, PATHINFO_EXTENSION);
+
+            $phototype = $_FILES['profile-photo']['type'];
+            if($phototype != 'image/jpeg' && $phototype != 'image/png' && $phototype != 'image/jpg') {
+                $errors['photo'] = 'Invalid file type';
+            }
+
+            $phototmpname = $_FILES['profile-photo']['tmp_name'];  
+
+            // validate file size
+            $phototmpsize = $_FILES['profile-photo']['size'];
+            if($phototmpsize > 5000000) {
+                $errors['photo'] = 'File size not more than 5MB';
+            }
+
+            // if the file is not an image, throw an error
+            $check = getimagesize($phototmpname);
+            if($check === false) {
+                $errors['photo'] = "File is not an image";
+            }
+
+            // move the file to the uploads directory
+            // check folder exists
+            if(!is_dir('./backend/uploads')) {
+                mkdir('./backend/uploads');
+            }
+
+            // check directory write permissions
+            if(!is_writable('./backend/uploads')) {
+                $errors['photo'] = "Uploads directory is not writable";
+            }
+
+            $photoname = $user['id'] . '.' . $photoextension;
+            $upload_result = move_uploaded_file($phototmpname, './backend/uploads/' . $photoname);
+        }
+
+        if(count($errors) == 0) {
+            try {
+                $update_parent_query = "UPDATE Parents SET photo=:photo WHERE parent_id=:parent_id"; //error
+                $statement = $pdo->prepare($update_parent_query);
+                $statement->bindParam(":photo", $photoname, PDO::PARAM_STR);
+                $statement->bindParam(":parent_id", $user['parent_id'], PDO::PARAM_INT);
+                $statement->execute();
+    
+                $_SESSION['success'] = 'Profile Photo updated successfully';
+                $_SESSION['user']['photo'] =  './backend/uploads/' . $photoname;
+                header("Location: profile.php");
+                exit();
+    
+            }
+            catch(PDOException $e) {
+                $errors['dberror'] = $e->getMessage();
+            }
+        }
+
+    }
+
     // Make Payment
     if(isset($_POST['make_payment']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -283,9 +349,24 @@
                 <div class="col-md-3">
                     <div class="card mb-3">
                         <div class="row g-0 d-flex">
-                            <div class="col-lg-12">
-                            <img src="<?= empty($user['photo']) ? 'http://placehold.co/300x300/000000/FFF' : $user['photo']  ?>" class="img-fluid rounded-start" alt="...">
+                            <div class="col-lg-12  pb-3 border-bottom">
+
+                                <div id="preview-profile-photo">
+                                    <img src="<?= empty($user['photo']) ? 'http://placehold.co/300x300/DDD/FFF' : $user['photo']  ?>" class="w-100 img-fluid rounded-top" alt="...">
+                                </div>
+
+                                <form action="profile.php" method="post" enctype="multipart/form-data">
+                                <label>
+                                    <span style="cursor:pointer;position: absolute; top: 10px; right: 10px;" class=" badge bg-primary">Change Photo</span>
+                                    
+                                        <input style="display: none;" type="file" accept="image/png, image/jpeg, image/jpg" name="profile-photo" class="form-control" id="profile-photo" >
+                                </label>
+
+                                <div class="mx-auto text-center"><input type="submit" name="profile-submit" class="btn btn-primary mt-3" value="Update Profile" id="profile-submit"></div>
+                                </form>
+
                             </div>
+
                             <div class="col-lg-12 align-self-center">
                             <div class="card-body ">
                                 <h5 class="card-title"><?= $user['name'] ?></h5>
@@ -550,7 +631,7 @@
         <?php include "./components/footer.php"; ?>
         <!-- Contact End -->
 
-    </>
+    </s>
 
     <script>
         const chooseFile = document.getElementById("photo");
@@ -568,6 +649,30 @@
                 fileReader.addEventListener("load", function () {
                 imgPreview.style.display = "block";
                 imgPreview.innerHTML = '<img class="rounded my-4 d-block" style="max-width: 100%; height: 100px" alt="Slip" src="' + this.result + '" />';
+                });    
+            }
+        }
+    </script>
+
+<script>
+        const chooseProfileFile = document.getElementById("profile-photo");
+        const imgProfilePreview = document.getElementById("preview-profile-photo");
+        const profileSubmit = document.getElementById("profile-submit");
+        profileSubmit.style.display = "none";
+
+        chooseProfileFile.addEventListener("change", function () {
+            getProfileImgData();
+        });
+
+        function getProfileImgData() {
+            const files = chooseProfileFile.files[0];
+            if (files) {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(files);
+                fileReader.addEventListener("load", function () {
+                imgProfilePreview.style.display = "block";
+                imgProfilePreview.innerHTML = '<img class="w-100 img-fluid rounded-start" alt="Profile" src="' + this.result + '" />';
+                profileSubmit.style.display = "inline-block";
                 });    
             }
         }

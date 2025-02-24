@@ -12,8 +12,8 @@
 
             <!-- Main Content -->
             <div class="container-fluid p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">User Management</h2>
+                <div class="bg-warning text-black p-4 rounded  d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-wallet-fill"></i> User Management</h2>
                 </div>
 
                 <?php if(isset($_SESSION['success'])) :  ?>
@@ -68,7 +68,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table">
-                                <thead>
+                                <thead class="table-secondary">
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
@@ -99,7 +99,7 @@
                                                         <?php endif; ?>
                                                     </td>
                                                     <td class="text-end">
-                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="text-white btn btn-warning ">Reset Password</a>
+                                                        <a href="reset-password.php?id=<?= $user['user_id'] ?>&name=<?= $user['name'] ?>" class="text-white btn btn-danger "><i class="bi bi-key"></i> Reset Password</a>
 
                                                         <?php 
                                                             $role = [
@@ -111,12 +111,12 @@
                                                         ?>
                                                         
                                                         <?php if(array_key_exists($user['role'], $role)) : ?>
-                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-secondary">Edit</a>
+                                                            <a href="<?= $role[$user['role']] ?>?id=<?= $user['id'] ?>" class="btn btn-secondary"><i class="bi bi-pencil"></i> Edit</a>
                                                         <?php endif; ?>
 
                                                         <div class="dropdown d-inline-block">
                                                             <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                Change Status
+                                                                <i class="bi bi-gear"></i> Status
                                                             </button>
                                                             <ul class="dropdown-menu">
                                                                 <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $user['user_id'] ?>&status=active&from=users.php&page=<?= $page ?>">Active</a></li>

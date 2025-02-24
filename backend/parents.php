@@ -13,9 +13,9 @@
             <!-- Main Content -->
             <div class="container-fluid p-4">
                 <div class="bg-warning text-black p-4 rounded  d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0"><i class="bi bi-people me-2"></i> Parent Management</h2>
+                    <h2 class="mb-0"><i class="bi bi-people"></i> Parent Management</h2>
                     <a href="parents-create.php" class="btn btn-primary">
-                        <i class="bi bi-person-plus me-2"></i> Add New Parent
+                        <i class="bi bi-person-plus"></i> Add New Parent
                     </a>
                 </div>
 

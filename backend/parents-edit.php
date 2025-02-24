@@ -134,7 +134,7 @@
             <!-- Main Content -->
             <div class="container-fluid p-4">
                 <div class="bg-warning text-black p-4 rounded  d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0"><i class="bi bi-pencil-square me-2"></i> Update Parent</h2>
+                    <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Update Parent</h2>
                 </div>
 
                 <!-- Show Error -->
@@ -174,7 +174,7 @@
                             <label class="form-label">Address</label>
                             <input type="text" class="form-control" name="address" value="<?= $parent['address']; ?>" required>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 text-center">
                             <a href="parents.php" class="btn btn-secondary">Cancel</a>
                             <button type="submit" name="update_parent" class="btn btn-primary">Update Parent</button>
                         </div>

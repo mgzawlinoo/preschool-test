@@ -76,7 +76,7 @@ else {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Little Stars Preschool - Login</title>
+<title>Admin Login - Little Stars Preschool</title>
 <base href="/backend/">
 <link rel="stylesheet" href="./css/bootstrap.min.css">
 <link rel="stylesheet" href="./css/bootstrap-icons.min.css">
@@ -101,7 +101,7 @@ else {
         <div class="row">
             <div class="col-md-4 mx-auto">
                 <img src="./img/icon.png" width="150px" height="auto" />
-                    <h4 class="mb-3">Login Form</h4>
+                    <h2 class="mb-3">AdminLogin Form</h2>
 
                     <?php
                         // Output errors

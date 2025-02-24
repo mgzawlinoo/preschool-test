@@ -19,7 +19,7 @@
 
         <div class="table-responsive" style="min-height: 320px;">
             <table class="table" id="parentsTable">
-                <thead>
+                <thead class="table-secondary">
                     <tr>
                         <th>#</th>
                         <th>Photo</th>
@@ -54,11 +54,11 @@
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-secondary">Edit</a>
+                                        <a href="parents-edit.php?id=<?= $parent['parent_id'] ?>" class="btn btn-secondary"><i class="bi bi-pencil"></i> Edit</a>
                                         
                                         <div class="dropdown d-inline-block">
                                             <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Change Status
+                                                <i class="bi bi-gear"></i> Status
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item text-success" href="user-change-status.php?id=<?= $parent['user_id'] ?>&status=active&from=parents.php">Active</a></li>

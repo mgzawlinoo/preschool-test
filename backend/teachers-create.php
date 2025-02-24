@@ -112,7 +112,7 @@
                 }
             }
 
-            if(count($error) == 0) {
+            if(count($errors) == 0) {
                 try {
                     $role = 'Teacher';
                     $password = password_hash($password, PASSWORD_DEFAULT);
@@ -163,14 +163,14 @@
       
             <!-- Main Content -->
             <div class="container-fluid p-4 pb-5 mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="mb-0">Add Teacher</h2>
+                <div class="bg-warning text-black p-4 rounded  d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0"><i class="bi bi-person-plus"></i> Add Teacher</h2>
                 </div>
 
-                <?php if(isset($error) && count($error) > 0) : ?>
+                <?php if(isset($errors) && count($errors) > 0) : ?>
                     <div class="alert alert-danger">
-                        <?php foreach($error as $e) : ?>
-                            <li><?php echo $e; ?></li>
+                        <?php foreach($errors as $error) : ?>
+                            <li><?php echo $error; ?></li>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
